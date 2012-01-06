@@ -2,7 +2,7 @@ import urlparse
 
 from OpenSSL import SSL
 
-from urllib2pyopenssl.ssl_peer_verification import ServerSSLCertVerification
+from ndg.httpsclient.ssl_peer_verification import ServerSSLCertVerification
 
 class SSlContextConfig(object):
     """

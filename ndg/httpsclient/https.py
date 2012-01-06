@@ -17,7 +17,7 @@ from urllib2 import AbstractHTTPHandler
 
 from OpenSSL import SSL
 
-from urllib2pyopenssl.ssl_socket import SSLSocket
+from ndg.httpsclient.ssl_socket import SSLSocket
 
 log = logging.getLogger(__name__)
 

@@ -6,12 +6,10 @@ import os
 import urllib2
 import urlparse
 
-from OpenSSL import SSL
+from ndg.httpsclient.urllib2_build_opener import build_opener
+from ndg.httpsclient.https import HTTPSContextHandler
+from ndg.httpsclient import ssl_context_util
 
-from urllib2pyopenssl.urllib2_build_opener import urllib2_build_opener
-from urllib2pyopenssl.https import HTTPSContextHandler
-import urllib2pyopenssl.ssl_context_util as ssl_context_util
-from urllib2pyopenssl.ssl_peer_verification import ServerSSLCertVerification
 
 def fetch_from_url(url, config):
     """Returns data retrieved from a URL.
@@ -19,7 +17,7 @@ def fetch_from_url(url, config):
     @param config - configuration
     @return data retrieved from URL or None
     """
-    (return_code, return_message, response) = open_url(url, config)
+    return_code, return_message, response = open_url(url, config)
     if return_code and return_code == httplib.OK:
         return_data = response.read()
         response.close()
@@ -38,14 +36,15 @@ def fetch_from_url_to_file(url, config, output_file):
         boolean indicating whether access was successful
     )
     """
-    (return_code, return_message, response) = open_url(url, config)
+    return_code, return_message, response = open_url(url, config)
     if return_code == httplib.OK:
         return_data = response.read()
         response.close()
         outfile = open(output_file, "w")
         outfile.write(return_data)
         outfile.close()
-    return (return_code, return_message, (return_code == httplib.OK))
+    return return_code, return_message, return_code == httplib.OK
+
 
 def open_url(url, config):
     """Attempts to open a connection to a specified URL.
@@ -67,18 +66,20 @@ def open_url(url, config):
 
     if config.debug:
         http_handler = urllib2.HTTPHandler(debuglevel=debuglevel)
-        https_handler = HTTPSContextHandler(config.ssl_context, debuglevel=debuglevel)
+        https_handler = HTTPSContextHandler(config.ssl_context, 
+                                            debuglevel=debuglevel)
         handlers.extend([http_handler, https_handler])
 
-    # Explicitly remove proxy handling if the host is one listed in the value of the no_proxy
-    # environment variable because urllib2 does use proxy settings set via http_proxy and
-    # https_proxy, but does not take the no_proxy value into account.
+    # Explicitly remove proxy handling if the host is one listed in the value of
+    # the no_proxy environment variable because urllib2 does use proxy settings 
+    # set via http_proxy and https_proxy, but does not take the no_proxy value 
+    # into account.
     if not _should_use_proxy(url):
         handlers.append(urllib2.ProxyHandler({}))
         if config.debug:
             print "Not using proxy"
 
-    opener = urllib2_build_opener(config.ssl_context, *handlers)
+    opener = build_opener(config.ssl_context, *handlers)
 
     # Open the URL and check the response.
     return_code = 0
@@ -105,6 +106,7 @@ def open_url(url, config):
             print exc.__class__, exc.__str__()
     return (return_code, return_message, response)
 
+
 def _should_use_proxy(url):
     """Determines whether a proxy should be used to open a connection to the specified URL, based on
         the value of the no_proxy environment variable.
@@ -119,6 +121,7 @@ def _should_use_proxy(url):
 
     return True
 
+
 class Configuration(object):
     """Checker configuration.
     """
@@ -131,6 +134,7 @@ class Configuration(object):
         self.ssl_context = ssl_context
         self.debug = debug
 
+
 def main():
     '''Utility to fetch data using HTTP or HTTPS GET from a specified URL.
     '''
@@ -141,36 +145,58 @@ def main():
     parser.add_option("-c", "--certificate", dest="cert_file", metavar="FILE",
                       default=os.path.expanduser("~/credentials.pem"),
                       help="Certificate file.")
-    parser.add_option("-t", "--ca-certificate-dir", dest="ca_dir", metavar="PATH",
+    parser.add_option("-t", "--ca-certificate-dir", dest="ca_dir", 
+                      metavar="PATH",
                       default=None,
                       help="Trusted CA certificate file directory.")
-    parser.add_option("-d", "--debug", action="store_true", dest="debug", default=False,
+    parser.add_option("-d", "--debug", action="store_true", dest="debug", 
+                      default=False,
                       help="Print debug information.")
     parser.add_option("-f", "--fetch", dest="output_file", metavar="FILE",
                       default=None, help="Output file.")
-    parser.add_option("-v", "--verify-peer", action="store_true", dest="verify_peer", default=False,
+    parser.add_option("-v", "--verify-peer", action="store_true", 
+                      dest="verify_peer", default=False,
                       help="Verify peer certificate.")
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.error("Incorrect number of arguments")
 
     url = args[0]
-    # If a private key file is not specified, the key is assumed to be stored in the certificate file.
+    
+    if options.key_file and os.path.exists(options.key_file):
+        key_file = options.key_file
+    else:
+        key_file = None
+    
+    if options.cert_file and os.path.exists(options.cert_file):
+        cert_file = options.cert_file
+    else:
+        cert_file = None
+    
+    if options.ca_dir and os.path.exists(options.ca_dir):
+        ca_dir = options.ca_dir 
+    else:
+        ca_dir = None
+        
+    # If a private key file is not specified, the key is assumed to be stored in 
+    # the certificate file.
     ssl_context = ssl_context_util.make_ssl_context(
-        options.key_file if options.key_file and os.path.exists(options.key_file) else None,
-        options.cert_file if options.cert_file and os.path.exists(options.cert_file) else None,
+        key_file,
+        cert_file,
         None,
-        options.ca_dir if options.ca_dir and os.path.exists(options.ca_dir) else None,
+        ca_dir,
         options.verify_peer, url)
 
     config = Configuration(ssl_context, options.debug)
     if options.output_file:
-        (return_code, return_message, success) = fetch_from_url_to_file(url, config,
-            options.output_file)
-        print return_code, return_message
+        return_code, return_message, success = fetch_from_url_to_file(url, 
+                                                          config,
+                                                          options.output_file)
+        print(return_code, return_message)
     else:
         data = fetch_from_url(url, config)
-        print data
+        print(data)
+
 
 if __name__=='__main__':
     logging.basicConfig()

@@ -30,9 +30,9 @@ class ServerSSLCertVerification(object):
     PARSER_RE_STR = '/(%s)=' % '|'.join(DN_LUT.keys() + DN_LUT.values())
     PARSER_RE = re.compile(PARSER_RE_STR)
 
-    __slots__ = ('__hostname', '__certDN', '__serverCNPrefixes')
+    __slots__ = ('__hostname', '__certDN')
 
-    def __init__(self, certDN=None, hostname=None, serverCNPrefixes=None):
+    def __init__(self, certDN=None, hostname=None):
         """Override parent class __init__ to enable setting of certDN
         setting
 
@@ -43,18 +43,12 @@ class ServerSSLCertVerification(object):
         """
         self.__certDN = None
         self.__hostname = None
-        self.__serverCNPrefixes = None
 
         if certDN is not None:
             self.certDN = certDN
 
         if hostname is not None:
             self.hostname = hostname
-
-        if serverCNPrefixes is not None:
-            self.serverCNPrefixes = serverCNPrefixes
-        else:
-            self.serverCNPrefixes = ['']
 
     def __call__(self, connection, peerCert, errorStatus, errorDepth,
                  preverifyOK):
@@ -167,16 +161,3 @@ class ServerSSLCertVerification(object):
     hostname = property(fget=_getHostname,
                         fset=_setHostname,
                         doc="hostname of server")
-
-    def _getServerCNPrefixes(self):
-        return self.__serverCNPrefixes
-
-    def _setServerCNPrefixes(self, val):
-        if not isinstance(val, list):
-            raise TypeError("Expecting string type for ServerCNPrefixes "
-                            "attribute")
-        self.__serverCNPrefixes = val
-
-    serverCNPrefixes = property(fget=_getServerCNPrefixes,
-                                fset=_setServerCNPrefixes,
-                                doc="Server CN Prefixes")

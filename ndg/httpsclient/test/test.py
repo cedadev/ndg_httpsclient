@@ -4,8 +4,8 @@ Created on Jan 5, 2012
 @author: philipkershaw
 '''
 import unittest
-from urllib2pyopenssl.urllib2_build_opener import urllib2_build_opener
-from urllib2pyopenssl.https import HTTPSConnection
+from ndg.httpsclient.urllib2_build_opener import urllib2_build_opener
+from ndg.httpsclient.https import HTTPSConnection
 
 
 class Urllib2PyOpenSslTestCase(unittest.TestCase):

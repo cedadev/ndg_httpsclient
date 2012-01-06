@@ -13,12 +13,12 @@ from urllib2 import (OpenerDirector, ProxyHandler, UnknownHandler, HTTPHandler,
                      HTTPDefaultErrorHandler, HTTPRedirectHandler,
                      FTPHandler, FileHandler, HTTPErrorProcessor)
 
-from urllib2pyopenssl.https import HTTPSContextHandler
+from ndg.httpsclient.https import HTTPSContextHandler
 
 log = logging.getLogger(__name__)
 
 # Copied from urllib2 with modifications for ssl
-def urllib2_build_opener(ssl_context=None, *handlers):
+def build_opener(ssl_context=None, *handlers):
     """Create an opener object from a list of handlers.
 
     The opener will use several default handlers, including support
