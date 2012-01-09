@@ -29,11 +29,16 @@ class HTTPSConnection(HTTPConnection):
     Note: This uses the constructor inherited from HTTPConnection to allow it to
     be used with httplib and HTTPSContextHandler. To use the class directly with
     an SSL context set ssl_context after construction.
+    
     @cvar default_port: default port for this class (443)
     @type default_port: int
+    @cvar default_ssl_method: default SSL method used if no SSL context is
+    explicitly set - defaults to version 2/3.
+    @type default_ssl_method: int
     """
     default_port = HTTPS_PORT
-
+    default_ssl_method = SSL.SSLv23_METHOD
+    
     def __init__(self, host, port=None, strict=None,
                  timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
         HTTPConnection.__init__(self, host, port, strict, timeout)
@@ -50,7 +55,7 @@ class HTTPSConnection(HTTPConnection):
                                 self.ssl_context)
             ssl_context = self.ssl_context
         else:
-            ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+            ssl_context = SSL.Context(self.__class__.default_ssl_method)
 
         sock = socket.create_connection((self.host, self.port), self.timeout)
         if getattr(self, '_tunnel_host', None):
@@ -66,15 +71,17 @@ class HTTPSConnection(HTTPConnection):
         
 
 class HTTPSContextHandler(AbstractHTTPHandler):
-    '''HTTPS handler that provides allows a SSL context to be set for the SSL
+    '''HTTPS handler that allows a SSL context to be set for the SSL
     connections.
     '''
     https_request = AbstractHTTPHandler.do_request_
 
     def __init__(self, ssl_context, debuglevel=0):
         """
-        @param ssl_context - SSL context
-        @param debuglevel - debug level for HTTPSHandler
+        @param ssl_context:SSL context
+        @type ssl_context: OpenSSL.SSL.Context
+        @param debuglevel: debug level for HTTPSHandler
+        @type debuglevel: int
         """
         AbstractHTTPHandler.__init__(self, debuglevel)
 

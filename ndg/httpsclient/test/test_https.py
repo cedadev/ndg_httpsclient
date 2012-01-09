@@ -12,7 +12,7 @@ from ndg.httpsclient.https import HTTPSConnection
 
 
 class TestHTTPSConnection(unittest.TestCase):
-
+    '''Test ndg HTTPS client HTTPSConnection class'''
 
     def test01(self):
         conn = HTTPSConnection(Constants.HOSTNAME, port=Constants.PORT)
