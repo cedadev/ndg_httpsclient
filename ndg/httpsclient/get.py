@@ -11,6 +11,10 @@ from ndg.httpsclient.https import HTTPSContextHandler
 from ndg.httpsclient import ssl_context_util
 
 
+class URLFetchError(Exception):
+    """Error fetching content from URL"""
+    
+
 def fetch_from_url(url, config):
     """Returns data retrieved from a URL.
     @param url - URL to attempt to open
@@ -23,7 +27,7 @@ def fetch_from_url(url, config):
         response.close()
         return return_data
     else:
-        raise Exception(return_message)
+        raise URLFetchError(return_message)
 
 def fetch_from_url_to_file(url, config, output_file):
     """Writes data retrieved from a URL to a file.
@@ -91,25 +95,25 @@ def open_url(url, config):
             return_message = response.msg
             return_code = response.code
         else:
-            return_message = ('Redirected (%s  %s)' % (response.code, response.url))
+            return_message = 'Redirected (%s  %s)' % response.code, response.url
         if config.debug:
             for index, cookie in enumerate(cj):
                 print index, '  :  ', cookie        
     except urllib2.HTTPError, exc:
         return_code = exc.code
-        return_message = ("Error: %s" % exc.msg)
+        return_message = "Error: %s" % exc.msg
         if config.debug:
             print exc.code, exc.msg
     except Exception, exc:
-        return_message = ("Error: %s" % exc.__str__())
+        return_message = "Error: %s" % exc.__str__()
         if config.debug:
             print exc.__class__, exc.__str__()
     return (return_code, return_message, response)
 
 
 def _should_use_proxy(url):
-    """Determines whether a proxy should be used to open a connection to the specified URL, based on
-        the value of the no_proxy environment variable.
+    """Determines whether a proxy should be used to open a connection to the 
+    specified URL, based on the value of the no_proxy environment variable.
     @param url - URL string
     """
     no_proxy = os.environ.get('no_proxy', '')
@@ -154,9 +158,9 @@ def main():
                       help="Print debug information.")
     parser.add_option("-f", "--fetch", dest="output_file", metavar="FILE",
                       default=None, help="Output file.")
-    parser.add_option("-v", "--verify-peer", action="store_true", 
-                      dest="verify_peer", default=False,
-                      help="Verify peer certificate.")
+    parser.add_option("-n", "--no-verify-peer", action="store_true", 
+                      dest="no_verify_peer", default=False,
+                      help="Skip verification of peer certificate.")
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.error("Incorrect number of arguments")
@@ -178,21 +182,23 @@ def main():
     else:
         ca_dir = None
         
+    verify_peer = not options.no_verify_peer
+    
     # If a private key file is not specified, the key is assumed to be stored in 
     # the certificate file.
-    ssl_context = ssl_context_util.make_ssl_context(
-        key_file,
-        cert_file,
-        None,
-        ca_dir,
-        options.verify_peer, url)
+    ssl_context = ssl_context_util.make_ssl_context(key_file,
+                                                    cert_file,
+                                                    None,
+                                                    ca_dir,
+                                                    verify_peer, 
+                                                    url)
 
     config = Configuration(ssl_context, options.debug)
     if options.output_file:
-        return_code, return_message, success = fetch_from_url_to_file(url, 
-                                                          config,
-                                                          options.output_file)
-        print(return_code, return_message)
+        return_code, return_message = fetch_from_url_to_file(url, 
+                                                      config,
+                                                      options.output_file)[:2]
+        raise SystemExit(return_code, return_message)
     else:
         data = fetch_from_url(url, config)
         print(data)

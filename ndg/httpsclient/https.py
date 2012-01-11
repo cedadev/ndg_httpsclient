@@ -47,12 +47,8 @@ class HTTPSConnection(HTTPConnection):
 
     def connect(self):
         """Create SSL socket and connect to peer
-        """ 
+        """
         if getattr(self, 'ssl_context', None):
-            if not isinstance(self.ssl_context, SSL.Context):
-                raise TypeError('Expecting OpenSSL.SSL.Context type for "'
-                                'ssl_context" keyword; got %r instead' %
-                                self.ssl_context)
             ssl_context = self.ssl_context
         else:
             ssl_context = SSL.Context(self.__class__.default_ssl_method)
@@ -86,10 +82,6 @@ class HTTPSContextHandler(AbstractHTTPHandler):
         AbstractHTTPHandler.__init__(self, debuglevel)
 
         if ssl_context is not None:
-            if not isinstance(ssl_context, SSL.Context):
-                raise TypeError('Expecting OpenSSL.SSL.Context type for "'
-                                'ssl_context" keyword; got %r instead' %
-                                ssl_context)
             self.ssl_context = ssl_context
         else:
             self.ssl_context = SSL.Context(SSL.SSLv23_METHOD)
