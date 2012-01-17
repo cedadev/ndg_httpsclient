@@ -1,16 +1,15 @@
+"""ndg_httpsclient - module containing SSL peer verification class.
 """
-"""
-__author__ = "P J Kershaw"
-__date__ = "02/06/05"
-__copyright__ = "(C) 2010 Science and Technology Facilities Council"
-__license__ = """BSD - See LICENSE file in top-level directory"""
+__author__ = "P J Kershaw (STFC)"
+__date__ = "09/12/11"
+__copyright__ = "(C) 2012 Science and Technology Facilities Council"
+__license__ = "BSD - see LICENSE file in top-level directory"
 __contact__ = "Philip.Kershaw@stfc.ac.uk"
-__revision__ = '$Id: client.py 7928 2011-08-12 13:16:26Z pjkersha $'
-
+__revision__ = '$Id$'
+import re
 import logging
 log = logging.getLogger(__name__)
 
-import re
 
 class ServerSSLCertVerification(object):
     """Check server identity.  If hostname doesn't match, allow match of

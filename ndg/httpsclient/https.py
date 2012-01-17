@@ -12,14 +12,9 @@ __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 import logging
 import socket
-import sys
 from httplib import HTTPS_PORT
-if sys.version_info < (2, 6, 2):
-    from ndg.httpsclient.httplib_proxy import HTTPConnection
-    from ndg.httpsclient.urllib2_proxy import AbstractHTTPHandler
-else:
-    from httplib import HTTPConnection
-    from urllib2 import AbstractHTTPHandler
+from httplib import HTTPConnection
+from urllib2 import AbstractHTTPHandler
 
 
 from OpenSSL import SSL
@@ -107,8 +102,8 @@ class HTTPSContextHandler(AbstractHTTPHandler):
 
     def https_open(self, req):
         """Opens HTTPS request
-        @param req - HTTP request
-        @return HTTP Response object
+        @param req: HTTP request
+        @return: HTTP Response object
         """
         # Make a custom class extending HTTPSConnection, with the SSL context
         # set as a class variable so that it is available to the connect method.

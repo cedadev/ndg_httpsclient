@@ -1,17 +1,51 @@
-'''
-Created on Jan 6, 2012
+"""unit tests module for ndg.httpsclient.utils module
 
-@author: philipkershaw
-'''
+PyOpenSSL utility to make a httplib-like interface suitable for use with 
+urllib2
+"""
+__author__ = "P J Kershaw (STFC)"
+__date__ = "06/01/12"
+__copyright__ = "(C) 2012 Science and Technology Facilities Council"
+__license__ = "BSD - see LICENSE file in top-level directory"
+__contact__ = "Philip.Kershaw@stfc.ac.uk"
+__revision__ = '$Id$'
 import unittest
+import os
+
+from OpenSSL import SSL
+
+from ndg.httpsclient.test import Constants
+from ndg.httpsclient.utils import (Configuration, fetch_from_url, open_url,
+                                   _should_use_proxy)
 
 
-class TestGetModule(unittest.TestCase):
+class TestUtilsModule(unittest.TestCase):
+    '''Test ndg.httpsclient.utils module'''
 
+    def test01_configuration(self):
+        config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)
+        self.assert_(config.ssl_context)
+        self.assertEquals(config.debug, True)
 
-    def test01(self):
-        pass
-
-
+    def test02_fetch_from_url(self):
+        config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)
+        res = fetch_from_url(Constants.TEST_URI, config)
+        self.assert_(res)
+        
+    def test03_open_url(self):
+        config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)
+        res = open_url(Constants.TEST_URI, config)
+        self.assertEqual(res[0], 200, 
+                         'open_url for %r failed' % Constants.TEST_URI)
+        
+    def test04__should_use_proxy(self):
+        self.assertTrue(_should_use_proxy(Constants.TEST_URI), 
+                        'Expecting use proxy = True')
+        
+        os.environ['no_proxy'] = 'localhost,localhost.localdomain'
+        self.assertFalse(_should_use_proxy(Constants.TEST_URI), 
+                         'Expecting use proxy = False')
+        del os.environ['no_proxy']
+    
 if __name__ == "__main__":
     unittest.main()

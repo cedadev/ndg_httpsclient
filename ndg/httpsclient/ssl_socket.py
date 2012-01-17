@@ -7,7 +7,7 @@ __date__ = "21/12/10"
 __copyright__ = "(C) 2012 Science and Technology Facilities Council"
 __license__ = "BSD - see LICENSE file in top-level directory"
 __contact__ = "Philip.Kershaw@stfc.ac.uk"
-__revision__ = '$Id: pyopenssl.py 7929 2011-08-16 16:39:13Z pjkersha $'
+__revision__ = '$Id$'
 
 from datetime import datetime
 import logging

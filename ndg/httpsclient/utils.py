@@ -3,12 +3,8 @@ import httplib
 import logging
 from optparse import OptionParser
 import os
-import sys
 import urllib2
-if sys.version_info < (2, 6, 2):
-    from ndg.httpsclient.urllib2_proxy import HTTPHandler
-else:
-    from urllib2 import HTTPHandler
+from urllib2 import HTTPHandler
     
 import urlparse
 
@@ -23,8 +19,9 @@ class URLFetchError(Exception):
 
 def fetch_from_url(url, config):
     """Returns data retrieved from a URL.
-    @param url - URL to attempt to open
-    @param config - configuration
+    @param url: URL to attempt to open
+    @param config: SSL context configuration
+    @type config: Configuration
     @return data retrieved from URL or None
     """
     return_code, return_message, response = open_url(url, config)
@@ -37,14 +34,14 @@ def fetch_from_url(url, config):
 
 def fetch_from_url_to_file(url, config, output_file):
     """Writes data retrieved from a URL to a file.
-    @param url - URL to attempt to open
-    @param config - configuration
-    @param output_file - output file
-    @return tuple (
+    @param url: URL to attempt to open
+    @param config: SSL context configuration
+    @type config: Configuration
+    @param output_file: output file
+    @return: tuple (
         returned HTTP status code or 0 if an error occurred
         returned message
-        boolean indicating whether access was successful
-    )
+        boolean indicating whether access was successful)
     """
     return_code, return_message, response = open_url(url, config)
     if return_code == httplib.OK:
@@ -58,13 +55,13 @@ def fetch_from_url_to_file(url, config, output_file):
 
 def open_url(url, config):
     """Attempts to open a connection to a specified URL.
-    @param url - URL to attempt to open
-    @param config - configuration
-    @return tuple (
+    @param url: URL to attempt to open
+    @param config: SSL context configuration
+    @type config: Configuration
+    @return: tuple (
         returned HTTP status code or 0 if an error occurred
         returned message or error description
-        response object
-    )
+        response object)
     """
     debuglevel = 1 if config.debug else 0
 
@@ -120,7 +117,8 @@ def open_url(url, config):
 def _should_use_proxy(url):
     """Determines whether a proxy should be used to open a connection to the 
     specified URL, based on the value of the no_proxy environment variable.
-    @param url - URL string
+    @param url: URL
+    @type url: basestring
     """
     no_proxy = os.environ.get('no_proxy', '')
 
@@ -137,9 +135,9 @@ class Configuration(object):
     """
     def __init__(self, ssl_context, debug):
         """
-        @param key_file - file containing the user's private key
-        @param cert_file - file containing the user's certificate
-        @param debug - if True, output debugging information
+        @param ssl_context: SSL context to use with this configuration
+        @type ssl_context: OpenSSL.SSL.Contex        @param debug: if True, output debugging information
+        @type debug: boo
         """
         self.ssl_context = ssl_context
         self.debug = debug

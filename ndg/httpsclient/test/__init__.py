@@ -1,4 +1,4 @@
-"""unit tests package for ndg_httpsclient
+"""Unit tests package for ndg_httpsclient
 
 PyOpenSSL utility to make a httplib-like interface suitable for use with 
 urllib2
@@ -21,7 +21,7 @@ class Constants(object):
     TEST_URI = 'https://%s:%d' % (HOSTNAME, PORT)
     TEST_URI2 = 'https://%s:%d' % (HOSTNAME, PORT2)
 
-    UNITTEST_DIR = os.path.dirname(os.path.abspath(__path__))
+    UNITTEST_DIR = os.path.dirname(os.path.abspath(__file__))
     SSL_CERT_FILENAME = 'localhost.crt'
     SSL_CERT_FILEPATH = os.path.join(UNITTEST_DIR, 'pki', SSL_CERT_FILENAME)
     SSL_PRIKEY_FILENAME = 'localhost.key'

@@ -1,8 +1,19 @@
+"""ndg_httpsclient SSL Context utilities module containing convenience routines
+for setting SSL context configuration.
+
+"""
+__author__ = "P J Kershaw (STFC)"
+__date__ = "09/12/11"
+__copyright__ = "(C) 2012 Science and Technology Facilities Council"
+__license__ = "BSD - see LICENSE file in top-level directory"
+__contact__ = "Philip.Kershaw@stfc.ac.uk"
+__revision__ = '$Id$'
 import urlparse
 
 from OpenSSL import SSL
 
 from ndg.httpsclient.ssl_peer_verification import ServerSSLCertVerification
+
 
 class SSlContextConfig(object):
     """
@@ -17,10 +28,12 @@ class SSlContextConfig(object):
         self.ca_dir = ca_dir
         self.verify_peer = verify_peer
 
+
 def make_ssl_context_from_config(ssl_config=False, url=None):
     return make_ssl_context(ssl_config.key_file, ssl_config.cert_file,
                             ssl_config.pem_file, ssl_config.ca_dir,
                             ssl_config.verify_peer, url)
+
 
 def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
                      verify_peer=False, url=None):
@@ -45,6 +58,7 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
         Performs no checks and returns the status passed in.
         """
         return preverify_ok
+    
     verify_callback = _callback
 
     if verify_peer:
@@ -57,7 +71,11 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
         ssl_context.set_verify(SSL.VERIFY_NONE, verify_callback)
     return ssl_context
 
-def set_peer_verification_for_url_hostname(ssl_context, url, if_verify_enabled=False):
+
+def set_peer_verification_for_url_hostname(ssl_context, url, 
+                                           if_verify_enabled=False):
+    '''Convenience routine to set peer verification callback based on
+    ServerSSLCertVerification class'''
     if not if_verify_enabled or (ssl_context.get_verify_mode() & SSL.VERIFY_PEER):
         urlObj = urlparse.urlparse(url)
         hostname = urlObj.hostname
