@@ -6,10 +6,10 @@ except ImportError:
     from setuptools import setup, find_packages
 
 _long_description = '''
-This is library provides an equivalent of httplib.HTTPSConnection based on 
-PyOpenSSL in order to take advantage of the latter's better security 
-capabilities including peer verification.  It also includes an extension to
-enable it to be used with urllib2. 
+This is a HTTPS client implementation for httplib and urllib2 based on 
+PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation over the
+default provided with Python and importantly enables full verification of the
+SSL peer. 
 
 Prerequisites
 =============
