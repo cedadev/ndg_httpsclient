@@ -8,14 +8,16 @@ except ImportError:
 setup(
     name='ndg_httpsclient',
     version="0.1.0",
-    description='Provides HTTPS for httplib and urllib2 using PyOpenSSL',
-    author='Richard Wilkinson',
+    description='Provides enhanced HTTPS support for httplib and urllib2 using '
+                'PyOpenSSL',
+    author='Richard Wilkinson and Philip Kershaw',
     long_description=open('README').read(),
     license='BSD - See LICENCE file for details',
     namespace_packages=['ndg'],
     packages=find_packages(),
+    install_requires = ['PyOpenSSL'],
     classifiers = [
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: End Users/Desktop',
@@ -36,7 +38,7 @@ setup(
     ],
     zip_safe = False,
     entry_points = {
-        'console_scripts': ['ndg_httpclient = myproxy.script:main',
+        'console_scripts': ['ndg_httpclient = ndg.httpsclient.utils:main',
                             ],
         }
 )

@@ -1,4 +1,4 @@
-"""urllib2pyopenssl HTTPS module containing PyOpenSSL implementation of
+"""ndg_httpsclient HTTPS module containing PyOpenSSL implementation of
 httplib.HTTPSConnection
 
 PyOpenSSL utility to make a httplib-like interface suitable for use with 
@@ -12,8 +12,15 @@ __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 import logging
 import socket
-from httplib import HTTPConnection, HTTPS_PORT
-from urllib2 import AbstractHTTPHandler
+import sys
+from httplib import HTTPS_PORT
+if sys.version_info < (2, 6, 2):
+    from ndg.httpsclient.httplib_proxy import HTTPConnection
+    from ndg.httpsclient.urllib2_proxy import AbstractHTTPHandler
+else:
+    from httplib import HTTPConnection
+    from urllib2 import AbstractHTTPHandler
+
 
 from OpenSSL import SSL
 
@@ -49,15 +56,23 @@ class HTTPSConnection(HTTPConnection):
         """Create SSL socket and connect to peer
         """
         if getattr(self, 'ssl_context', None):
+            if not isinstance(self.ssl_context, SSL.Context):
+                raise TypeError('Expecting OpenSSL.SSL.Context type for "'
+                                'ssl_context" keyword; got %r instead' %
+                                self.ssl_context)
             ssl_context = self.ssl_context
         else:
             ssl_context = SSL.Context(self.__class__.default_ssl_method)
 
         sock = socket.create_connection((self.host, self.port), self.timeout)
+        
+        # Tunnel if using a proxy - ONLY available for Python 2.6.2 and above      
         if getattr(self, '_tunnel_host', None):
             self.sock = sock
             self._tunnel()
+            
         self.sock = SSLSocket(ssl_context, sock)
+        
         # Go to client mode.
         self.sock.set_connect_state()
 
@@ -82,6 +97,10 @@ class HTTPSContextHandler(AbstractHTTPHandler):
         AbstractHTTPHandler.__init__(self, debuglevel)
 
         if ssl_context is not None:
+            if not isinstance(ssl_context, SSL.Context):
+                raise TypeError('Expecting OpenSSL.SSL.Context type for "'
+                                'ssl_context" keyword; got %r instead' %
+                                ssl_context)
             self.ssl_context = ssl_context
         else:
             self.ssl_context = SSL.Context(SSL.SSLv23_METHOD)

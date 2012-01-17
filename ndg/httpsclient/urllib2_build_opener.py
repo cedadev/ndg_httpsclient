@@ -7,11 +7,16 @@ __copyright__ = "(C) 2011 Science and Technology Facilities Council"
 __license__ = "BSD - see LICENSE file in top-level directory"
 __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id: pyopenssl.py 7929 2011-08-16 16:39:13Z pjkersha $'
-
 import logging
-from urllib2 import (OpenerDirector, ProxyHandler, UnknownHandler, HTTPHandler,
-                     HTTPDefaultErrorHandler, HTTPRedirectHandler,
+from urllib2 import (ProxyHandler, UnknownHandler, HTTPDefaultErrorHandler, 
                      FTPHandler, FileHandler, HTTPErrorProcessor)
+
+import sys
+if sys.version_info < (2, 6, 2):
+    from ndg.httpsclient.urllib2_proxy import (HTTPHandler, OpenerDirector, 
+                                               HTTPRedirectHandler)
+else:
+    from urllib2 import HTTPHandler, OpenerDirector, HTTPRedirectHandler
 
 from ndg.httpsclient.https import HTTPSContextHandler
 

@@ -1,0 +1,11 @@
+#
+# MANIFEST.in file to enable inclusion of unit test data files and config
+# 
+# NDG HTTPS Client Package
+# 
+# P J Kershaw 17/01/12
+# 
+# Copyright (C) 2012 STFC
+# 
+# Licence: BSD - See LICENCE file for details
+recursive-include ndg/ *.crt *.key *.pem README

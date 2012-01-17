@@ -3,7 +3,13 @@ import httplib
 import logging
 from optparse import OptionParser
 import os
+import sys
 import urllib2
+if sys.version_info < (2, 6, 2):
+    from ndg.httpsclient.urllib2_proxy import HTTPHandler
+else:
+    from urllib2 import HTTPHandler
+    
 import urlparse
 
 from ndg.httpsclient.urllib2_build_opener import build_opener
@@ -69,7 +75,7 @@ def open_url(url, config):
     handlers = [cookie_handler]
 
     if config.debug:
-        http_handler = urllib2.HTTPHandler(debuglevel=debuglevel)
+        http_handler = HTTPHandler(debuglevel=debuglevel)
         https_handler = HTTPSContextHandler(config.ssl_context, 
                                             debuglevel=debuglevel)
         handlers.extend([http_handler, https_handler])
