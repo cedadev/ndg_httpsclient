@@ -10,4 +10,3 @@
 # Licence: BSD - See LICENCE file for details
 recursive-include ndg/httpsclient/test *.crt *.key *.sh README
 recursive-include documentation Makefile
-include README

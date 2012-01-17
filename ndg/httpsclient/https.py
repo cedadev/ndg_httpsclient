@@ -42,18 +42,26 @@ class HTTPSConnection(HTTPConnection):
     default_ssl_method = SSL.SSLv23_METHOD
     
     def __init__(self, host, port=None, strict=None,
-                 timeout=socket._GLOBAL_DEFAULT_TIMEOUT):
+                 timeout=socket._GLOBAL_DEFAULT_TIMEOUT, ssl_context=None):
         HTTPConnection.__init__(self, host, port, strict, timeout)
         if not hasattr(self, 'ssl_context'):
             self.ssl_context = None
 
+        if ssl_context is not None:
+            if not isinstance(ssl_context, SSL.Context):
+                raise TypeError('Expecting OpenSSL.SSL.Context type for "'
+                                'ssl_context" keyword; got %r instead' %
+                                ssl_context)
+                
+            self.ssl_context = ssl_context
+            
     def connect(self):
         """Create SSL socket and connect to peer
         """
         if getattr(self, 'ssl_context', None):
             if not isinstance(self.ssl_context, SSL.Context):
                 raise TypeError('Expecting OpenSSL.SSL.Context type for "'
-                                'ssl_context" keyword; got %r instead' %
+                                'ssl_context" attribute; got %r instead' %
                                 self.ssl_context)
             ssl_context = self.ssl_context
         else:

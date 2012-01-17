@@ -22,6 +22,7 @@ class Constants(object):
     TEST_URI2 = 'https://%s:%d' % (HOSTNAME, PORT2)
 
     UNITTEST_DIR = os.path.dirname(os.path.abspath(__file__))
+    CACERT_DIR = os.path.join(UNITTEST_DIR, 'pki', 'ca')
     SSL_CERT_FILENAME = 'localhost.crt'
     SSL_CERT_FILEPATH = os.path.join(UNITTEST_DIR, 'pki', SSL_CERT_FILENAME)
     SSL_PRIKEY_FILENAME = 'localhost.key'

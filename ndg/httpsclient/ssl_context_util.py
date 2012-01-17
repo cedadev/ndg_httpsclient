@@ -36,11 +36,12 @@ def make_ssl_context_from_config(ssl_config=False, url=None):
 
 
 def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
-                     verify_peer=False, url=None):
+                     verify_peer=False, url=None, method=SSL.SSLv23_METHOD):
     """
     Creates SSL context containing certificate and key file locations.
     """
-    ssl_context = SSL.Context(SSL.SSLv23_METHOD)
+    ssl_context = SSL.Context(method)
+    
     # Key file defaults to certificate file if present.
     if cert_file:
         ssl_context.use_certificate_file(cert_file)

@@ -13,8 +13,8 @@ enable it to be used with urllib2.
 
 Prerequisites
 =============
-This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL.  Note
-that proxy support is only available from Python 2.6.2 onwards.
+This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13.  
+Note that proxy support is only available from Python 2.6.2 onwards.
 
 Installation
 ============
@@ -48,6 +48,8 @@ setup(
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
+    author_email='Philip.Kershaw@stfc.ac.uk',
+    url='http://ndg-security.ceda.ac.uk/wiki/ndg_httpsclient/',
     long_description=_long_description,
     license='BSD - See LICENCE file for details',
     namespace_packages=['ndg'],
