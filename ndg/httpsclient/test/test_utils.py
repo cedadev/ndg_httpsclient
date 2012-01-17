@@ -39,13 +39,23 @@ class TestUtilsModule(unittest.TestCase):
                          'open_url for %r failed' % Constants.TEST_URI)
         
     def test04__should_use_proxy(self):
+        if 'no_proxy' in os.environ:
+            no_proxy = os.environ['no_proxy']
+            del os.environ['no_proxy']
+        else:
+            no_proxy = None
+               
         self.assertTrue(_should_use_proxy(Constants.TEST_URI), 
                         'Expecting use proxy = True')
         
         os.environ['no_proxy'] = 'localhost,localhost.localdomain'
         self.assertFalse(_should_use_proxy(Constants.TEST_URI), 
                          'Expecting use proxy = False')
-        del os.environ['no_proxy']
+        
+        if no_proxy is not None:
+            os.environ['no_proxy'] = no_proxy
+        else:
+            del os.environ['no_proxy']
     
 if __name__ == "__main__":
     unittest.main()
