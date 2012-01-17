@@ -48,7 +48,7 @@ setup(
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
-    long_description=open('README').read(),
+    long_description=_long_description,
     license='BSD - See LICENCE file for details',
     namespace_packages=['ndg'],
     packages=find_packages(),
