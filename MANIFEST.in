@@ -8,6 +8,6 @@
 # Copyright (C) 2012 STFC
 # 
 # Licence: BSD - See LICENCE file for details
-recursive-include ndg/httpsclient/test *.crt *.key *.pem *.sh README
+recursive-include ndg/httpsclient/test *.crt *.key *.sh README
 recursive-include documentation Makefile
-recursive-include README
+include README
