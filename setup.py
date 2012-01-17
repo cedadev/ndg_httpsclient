@@ -5,6 +5,43 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+_long_description = '''
+This is library provides an equivalent of httplib.HTTPSConnection based on 
+PyOpenSSL in order to take advantage of the latter's better security 
+capabilities including peer verification.  It also includes an extension to
+enable it to be used with urllib2. 
+
+Prerequisites
+=============
+This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL.  Note
+that proxy support is only available from Python 2.6.2 onwards.
+
+Installation
+============
+Installation can be performed using easy_install or pip.
+
+Running ndg_httpclient
+======================
+A simple script for fetching data using HTTP or HTTPS GET from a specified URL.
+ 
+Parameter::
+    url                   The URL of the resource to be fetched
+
+Options::
+    -h, --help            Show help message and exit.
+    -c FILE, --certificate=FILE
+                          Certificate file - defaults to $HOME/credentials.pem
+    -k FILE, --private-key=FILE
+                          Private key file - defaults to the certificate file
+    -t DIR, --ca-certificate-dir=DIR
+                          Trusted CA certificate file directory.
+    -d, --debug           Print debug information - this may be useful in 
+                          solving problems with HTTP or HTTPS access to a 
+                          server.
+    -f FILE, --fetch=FILE Output file
+    -n, --no-verify-peer  Skip verification of peer certificate.
+'''
+    
 setup(
     name='ndg_httpsclient',
     version="0.1.0",
@@ -15,6 +52,15 @@ setup(
     license='BSD - See LICENCE file for details',
     namespace_packages=['ndg'],
     packages=find_packages(),
+    package_dir={'ndg.httpsclient': 'ndg/httpsclient'},
+    package_data={
+        'ndg.httpsclient': [
+            'test/README', 
+            'test/scripts/*.sh',
+            'test/pki/localhost.*',
+            'test/pki/ca/*.0'
+            ],
+    },
     install_requires = ['PyOpenSSL'],
     classifiers = [
         'Development Status :: 3 - Alpha',
