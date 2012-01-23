@@ -98,14 +98,12 @@ class ServerSSLCertVerification(object):
                               'certificate against')
                     return False
 
-                acceptableCNs = [pfx + self.hostname
-                                 for pfx in self.serverCNPrefixes]
-                if peerCertSubj.commonName in acceptableCNs:
+                if peerCertSubj.commonName == self.hostname:
                     return preverifyOK
                 else:
                     log.error('Peer certificate CN %r doesn\'t match the '
                               'expected CN %r', peerCertSubj.commonName,
-                              acceptableCNs)
+                              self.hostname)
                     return False
             else:
                 if peerCertDN == self.certDN:
