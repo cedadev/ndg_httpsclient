@@ -110,7 +110,8 @@ def open_url(url, config):
     except Exception, exc:
         return_message = "Error: %s" % exc.__str__()
         if config.debug:
-            print exc.__class__, exc.__str__()
+            import traceback
+            print traceback.format_exc()
     return (return_code, return_message, response)
 
 

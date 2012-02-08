@@ -19,6 +19,7 @@ from OpenSSL import SSL
 
 from ndg.httpsclient.test import Constants
 from ndg.httpsclient.https import HTTPSConnection
+from ndg.httpsclient.ssl_peer_verification import ServerSSLCertVerification
 
 
 class TestHTTPSConnection(unittest.TestCase):
@@ -61,6 +62,45 @@ class TestHTTPSConnection(unittest.TestCase):
         verify_callback = lambda conn, x509, errnum, errdepth, preverify_ok: \
             preverify_ok 
             
+        ctx.set_verify(SSL.VERIFY_PEER, verify_callback)
+        ctx.set_verify_depth(9)
+        
+        # Set correct location for CA certs to verify with
+        ctx.load_verify_locations(None, Constants.CACERT_DIR)
+        
+        conn = HTTPSConnection(Constants.HOSTNAME, port=Constants.PORT,
+                               ssl_context=ctx)
+        conn.connect()
+        conn.request('GET', '/')
+        resp = conn.getresponse()
+        print('Response = %s' % resp.read())
+
+    def test04_ssl_verification_with_subj_alt_name(self):
+        ctx = SSL.Context(SSL.SSLv3_METHOD)
+        
+        verify_callback = ServerSSLCertVerification(hostname='localhost')
+            
+        ctx.set_verify(SSL.VERIFY_PEER, verify_callback)
+        ctx.set_verify_depth(9)
+        
+        # Set correct location for CA certs to verify with
+        ctx.load_verify_locations(None, Constants.CACERT_DIR)
+        
+        conn = HTTPSConnection(Constants.HOSTNAME, port=Constants.PORT,
+                               ssl_context=ctx)
+        conn.connect()
+        conn.request('GET', '/')
+        resp = conn.getresponse()
+        print('Response = %s' % resp.read())
+
+    def test04_ssl_verification_with_subj_common_name(self):
+        ctx = SSL.Context(SSL.SSLv3_METHOD)
+        
+        # Explicitly set verification of peer hostname using peer certificate
+        # subject common name
+        verify_callback = ServerSSLCertVerification(hostname='localhost',
+                                                    subj_alt_name_match=False)
+
         ctx.set_verify(SSL.VERIFY_PEER, verify_callback)
         ctx.set_verify_depth(9)
         

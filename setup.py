@@ -14,11 +14,12 @@ SSL peer.
 Prerequisites
 =============
 This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13.  
-Note that proxy support is only available from Python 2.6.2 onwards.
+Note that proxy support is only available from Python 2.6.2 onwards.  pyasn1 is 
+required for correct SSL verification with subjectAltNames.
 
 Installation
 ============
-Installation can be performed using easy_install or pip.
+Installation can be performed using easy_install or pip.  
 
 Running ndg_httpclient
 ======================
@@ -64,6 +65,7 @@ setup(
             ],
     },
     install_requires = ['PyOpenSSL'],
+    extras_require = {'subjectAltName_support': 'pyasn1'},
     classifiers = [
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
