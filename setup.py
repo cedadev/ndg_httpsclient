@@ -45,7 +45,7 @@ Options::
     
 setup(
     name='ndg_httpsclient',
-    version="0.2.0",
+    version="0.2.1",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
