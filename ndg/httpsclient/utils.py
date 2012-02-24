@@ -1,16 +1,61 @@
+"""Utilities using NDG HTTPS Client, including a main module that can be used to
+fetch from a URL.
+"""
+__author__ = "R B Wilkinson"
+__date__ = "09/12/11"
+__copyright__ = "(C) 2011 Science and Technology Facilities Council"
+__license__ = "BSD - see LICENSE file in top-level directory"
+__contact__ = "Philip.Kershaw@stfc.ac.uk"
+__revision__ = '$Id$'
+
 import cookielib
 import httplib
 import logging
 from optparse import OptionParser
 import os
 import urllib2
-from urllib2 import HTTPHandler
-    
+from urllib2 import HTTPHandler, HTTPCookieProcessor
+
 import urlparse
 
 from ndg.httpsclient.urllib2_build_opener import build_opener
 from ndg.httpsclient.https import HTTPSContextHandler
 from ndg.httpsclient import ssl_context_util
+
+log = logging.getLogger(__name__)
+
+class AccumulatingHTTPCookieProcessor(HTTPCookieProcessor):
+    """Cookie processor that adds new cookies (instead of replacing the existing
+    ones as HTTPCookieProcessor does)
+    """
+    def http_request(self, request):
+        """Processes cookies for a HTTP request.
+        @param request: request to process
+        @type request: urllib2.Request
+        @return: request
+        @rtype: urllib2.Request
+        """
+        COOKIE_HEADER_NAME = "Cookie"
+        tmp_request = urllib2.Request(request.get_full_url(), request.data, {},
+                                      request.origin_req_host,
+                                      request.unverifiable)
+        self.cookiejar.add_cookie_header(tmp_request)
+        # Combine existing and new cookies.
+        new_cookies = tmp_request.get_header(COOKIE_HEADER_NAME)
+        if new_cookies:
+            if request.has_header(COOKIE_HEADER_NAME):
+                # Merge new cookies with existing ones.
+                old_cookies = request.get_header(COOKIE_HEADER_NAME)
+                merged_cookies = '; '.join([old_cookies, new_cookies])
+                request.add_unredirected_header(COOKIE_HEADER_NAME,
+                                                merged_cookies)
+            else:
+                # No existing cookies so just set new ones.
+                request.add_unredirected_header(COOKIE_HEADER_NAME, new_cookies)
+        return request
+
+    # Process cookies for HTTPS in the same way.
+    https_request = http_request
 
 
 class URLFetchError(Exception):
@@ -66,8 +111,15 @@ def open_url(url, config):
     debuglevel = 1 if config.debug else 0
 
     # Set up handlers for URL opener.
-    cj = cookielib.CookieJar()
-    cookie_handler = urllib2.HTTPCookieProcessor(cj)
+    if config.cookie:
+        cj = config.cookie
+    else:
+        cj = cookielib.CookieJar()
+    # Use a cookie processor that accumulates cookies when redirects occur so
+    # that an application can redirect for authentication and retain both any
+    # cookies for the application and the security system (c.f.,
+    # urllib2.HTTPCookieProcessor which replaces cookies).
+    cookie_handler = AccumulatingHTTPCookieProcessor(cj)
 
     handlers = [cookie_handler]
 
@@ -81,10 +133,12 @@ def open_url(url, config):
     # the no_proxy environment variable because urllib2 does use proxy settings 
     # set via http_proxy and https_proxy, but does not take the no_proxy value 
     # into account.
-    if not _should_use_proxy(url):
+    if not _should_use_proxy(url, config.no_proxy):
         handlers.append(urllib2.ProxyHandler({}))
-        if config.debug:
-            print "Not using proxy"
+        log.debug("Not using proxy")
+    elif config.proxies:
+        handlers.append(urllib2.ProxyHandler(config.proxies))
+        log.debug("Configuring proxies: %s" % config.proxies)
 
     opener = build_opener(config.ssl_context, *handlers)
 
@@ -94,54 +148,81 @@ def open_url(url, config):
     response = None
     try:
         response = opener.open(url)
-        if response.url == url:
-            return_message = response.msg
-            return_code = response.code
-        else:
-            return_message = 'Redirected (%s  %s)' % response.code, response.url
-        if config.debug:
+        return_message = response.msg
+        return_code = response.code
+        if log.isEnabledFor(logging.DEBUG):
             for index, cookie in enumerate(cj):
-                print index, '  :  ', cookie        
+                log.debug("%s  :  %s", index, cookie)
     except urllib2.HTTPError, exc:
         return_code = exc.code
         return_message = "Error: %s" % exc.msg
-        if config.debug:
-            print exc.code, exc.msg
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug("%s %s", exc.code, exc.msg)
     except Exception, exc:
         return_message = "Error: %s" % exc.__str__()
-        if config.debug:
+        if log.isEnabledFor(logging.DEBUG):
             import traceback
-            print traceback.format_exc()
+            log.debug(traceback.format_exc())
     return (return_code, return_message, response)
 
 
-def _should_use_proxy(url):
+def _should_use_proxy(url, no_proxy):
     """Determines whether a proxy should be used to open a connection to the 
     specified URL, based on the value of the no_proxy environment variable.
     @param url: URL
-    @type url: basestring
+    @type url: basestring or urllib2.Request
     """
-    no_proxy = os.environ.get('no_proxy', '')
+    if no_proxy is None:
+        no_proxy_effective = os.environ.get('no_proxy', '')
+    else:
+        no_proxy_effective = no_proxy
 
-    urlObj = urlparse.urlparse(url)
-    for np in [h.strip() for h in no_proxy.split(',')]:
+    urlObj = urlparse.urlparse(_url_as_string(url))
+    for np in [h.strip() for h in no_proxy_effective.split(',')]:
         if urlObj.hostname == np:
             return False
 
     return True
 
+def _url_as_string(url):
+    """Returns the URL string from a URL value that is either a string or
+    urllib2.Request..
+    @param url: URL
+    @type url: basestring or urllib2.Request
+    @return: URL string
+    @rtype: basestring
+    """
+    if isinstance(url, urllib2.Request):
+        return url.get_full_url()
+    elif isinstance(url, basestring):
+        return url
+    else:
+        raise TypeError("Expected type %r or %r" %
+                        (basestring, urllib2.Request))
+
 
 class Configuration(object):
     """Checker configuration.
     """
-    def __init__(self, ssl_context, debug):
+    def __init__(self, ssl_context, debug, proxies=None, no_proxy=None,
+                 cookie=None):
         """
         @param ssl_context: SSL context to use with this configuration
-        @type ssl_context: OpenSSL.SSL.Contex        @param debug: if True, output debugging information
-        @type debug: boo
+        @type ssl_context: OpenSSL.SSL.Context
+        @param debug: if True, output debugging information
+        @type debug: bool
+        @param proxies: proxies to use for 
+        @type proxies: dict with basestring keys and values
+        @param no_proxy: hosts for which a proxy should not be used
+        @type no_proxy: basestring
+        @param cookie: cookies to set for request
+        @type cookie: cookielib.CookieJar
         """
         self.ssl_context = ssl_context
         self.debug = debug
+        self.proxies = proxies
+        self.no_proxy = no_proxy
+        self.cookie = cookie
 
 
 def main():
@@ -171,7 +252,10 @@ def main():
         parser.error("Incorrect number of arguments")
 
     url = args[0]
-    
+
+    if options.debug:
+        logging.getLogger().setLevel(logging.DEBUG)
+
     if options.key_file and os.path.exists(options.key_file):
         key_file = options.key_file
     else:

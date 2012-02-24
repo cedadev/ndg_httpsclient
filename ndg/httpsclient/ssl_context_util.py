@@ -51,7 +51,7 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
         if cert_file:
             ssl_context.use_privatekey_file(cert_file)
 
-    if ca_dir:
+    if pem_file or ca_dir:
         ssl_context.load_verify_locations(pem_file, ca_dir)
 
     def _callback(conn, x509, errnum, errdepth, preverify_ok):
