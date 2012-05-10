@@ -62,14 +62,15 @@ class URLFetchError(Exception):
     """Error fetching content from URL"""
     
 
-def fetch_from_url(url, config):
+def fetch_from_url(url, config, data=None):
     """Returns data retrieved from a URL.
     @param url: URL to attempt to open
+    @type url: basestring
     @param config: SSL context configuration
     @type config: Configuration
     @return data retrieved from URL or None
     """
-    return_code, return_message, response = open_url(url, config)
+    return_code, return_message, response = open_url(url, config, data)
     if return_code and return_code == httplib.OK:
         return_data = response.read()
         response.close()
@@ -77,18 +78,20 @@ def fetch_from_url(url, config):
     else:
         raise URLFetchError(return_message)
 
-def fetch_from_url_to_file(url, config, output_file):
+def fetch_from_url_to_file(url, config, output_file, data=None):
     """Writes data retrieved from a URL to a file.
     @param url: URL to attempt to open
+    @type url: basestring
     @param config: SSL context configuration
     @type config: Configuration
     @param output_file: output file
+    @type output_file: basestring
     @return: tuple (
         returned HTTP status code or 0 if an error occurred
         returned message
         boolean indicating whether access was successful)
     """
-    return_code, return_message, response = open_url(url, config)
+    return_code, return_message, response = open_url(url, config, data)
     if return_code == httplib.OK:
         return_data = response.read()
         response.close()
@@ -97,12 +100,29 @@ def fetch_from_url_to_file(url, config, output_file):
         outfile.close()
     return return_code, return_message, return_code == httplib.OK
 
+def fetch_stream_from_url(url, config, data=None):
+    """Returns data retrieved from a URL.
+    @param url: URL to attempt to open
+    @type url: basestring
+    @param config: SSL context configuration
+    @type config: Configuration
+    @return: data retrieved from URL or None
+    @rtype: file derived type
+    """
+    return_code, return_message, response = open_url(url, config, data)
+    if return_code and return_code == httplib.OK:
+        return response
+    else:
+        raise URLFetchError(return_message)
 
-def open_url(url, config):
+
+def open_url(url, config, data=None):
     """Attempts to open a connection to a specified URL.
     @param url: URL to attempt to open
     @param config: SSL context configuration
     @type config: Configuration
+    @param data: HTTP POST data
+    @type data: str
     @return: tuple (
         returned HTTP status code or 0 if an error occurred
         returned message or error description
@@ -147,7 +167,7 @@ def open_url(url, config):
     return_message = ''
     response = None
     try:
-        response = opener.open(url)
+        response = opener.open(url, data)
         return_message = response.msg
         return_code = response.code
         if log.isEnabledFor(logging.DEBUG):
@@ -202,9 +222,9 @@ def _url_as_string(url):
 
 
 class Configuration(object):
-    """Checker configuration.
+    """Connection configuration.
     """
-    def __init__(self, ssl_context, debug, proxies=None, no_proxy=None,
+    def __init__(self, ssl_context, debug=False, proxies=None, no_proxy=None,
                  cookie=None):
         """
         @param ssl_context: SSL context to use with this configuration
@@ -229,21 +249,24 @@ def main():
     '''Utility to fetch data using HTTP or HTTPS GET from a specified URL.
     '''
     parser = OptionParser(usage="%prog [options] url")
-    parser.add_option("-k", "--private-key", dest="key_file", metavar="FILE",
-                      default=None,
-                      help="Private key file.")
     parser.add_option("-c", "--certificate", dest="cert_file", metavar="FILE",
                       default=os.path.expanduser("~/credentials.pem"),
-                      help="Certificate file.")
+                      help="Certificate file - defaults to $HOME/credentials.pem")
+    parser.add_option("-k", "--private-key", dest="key_file", metavar="FILE",
+                      default=None,
+                      help="Private key file - defaults to the certificate file")
     parser.add_option("-t", "--ca-certificate-dir", dest="ca_dir", 
                       metavar="PATH",
                       default=None,
-                      help="Trusted CA certificate file directory.")
+                      help="Trusted CA certificate file directory")
     parser.add_option("-d", "--debug", action="store_true", dest="debug", 
                       default=False,
                       help="Print debug information.")
+    parser.add_option("-p", "--post-data-file", dest="data_file",
+                      metavar="FILE", default=None,
+                      help="POST data file")
     parser.add_option("-f", "--fetch", dest="output_file", metavar="FILE",
-                      default=None, help="Output file.")
+                      default=None, help="Output file")
     parser.add_option("-n", "--no-verify-peer", action="store_true", 
                       dest="no_verify_peer", default=False,
                       help="Skip verification of peer certificate.")
@@ -272,6 +295,13 @@ def main():
         ca_dir = None
         
     verify_peer = not options.no_verify_peer
+
+    if options.data_file and os.path.exists(options.data_file):
+        data_file = open(options.data_file)
+        data = data_file.read()
+        data_file.close()
+    else:
+        data = None
     
     # If a private key file is not specified, the key is assumed to be stored in 
     # the certificate file.
@@ -286,7 +316,8 @@ def main():
     if options.output_file:
         return_code, return_message = fetch_from_url_to_file(url, 
                                                       config,
-                                                      options.output_file)[:2]
+                                                      options.output_file,
+                                                      data)[:2]
         raise SystemExit(return_code, return_message)
     else:
         data = fetch_from_url(url, config)
