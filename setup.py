@@ -39,6 +39,8 @@ Options::
     -d, --debug           Print debug information - this may be useful in 
                           solving problems with HTTP or HTTPS access to a 
                           server.
+    -p FILE, --post-data-file=FILE
+                          POST data file
     -f FILE, --fetch=FILE Output file
     -n, --no-verify-peer  Skip verification of peer certificate.
 '''
