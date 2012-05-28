@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 
 # Copied from urllib2 with modifications for ssl
-def build_opener(ssl_context=None, *handlers):
+def build_opener(*handlers, **kw):
     """Create an opener object from a list of handlers.
 
     The opener will use several default handlers, including support
@@ -49,7 +49,10 @@ def build_opener(ssl_context=None, *handlers):
     for klass in default_classes:
         if klass not in skip:
             opener.add_handler(klass())
-
+            
+    # Pick up SSL context from keyword settings
+    ssl_context = kw.get('ssl_context')
+    
     # Add the HTTPS handler with ssl_context
     if HTTPSContextHandler not in skip:
         opener.add_handler(HTTPSContextHandler(ssl_context))
