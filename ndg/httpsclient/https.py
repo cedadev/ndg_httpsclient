@@ -83,7 +83,7 @@ class HTTPSConnection(HTTPConnection):
         """Close socket and shut down SSL connection"""
         self.sock.close()
         
-
+        
 class HTTPSContextHandler(AbstractHTTPHandler):
     '''HTTPS handler that allows a SSL context to be set for the SSL
     connections.

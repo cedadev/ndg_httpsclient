@@ -46,6 +46,7 @@ class SSLSocket(object):
 
         self.__ssl_conn = SSL.Connection(ctx, self.socket)
         self.buf_size = self.__class__.default_buf_size
+        self._makefile_refs = 0
 
     def __del__(self):
         """Close underlying socket when this object goes out of scope
@@ -68,13 +69,16 @@ class SSLSocket(object):
     def close(self):
         """Shutdown the SSL connection and call the close method of the
         underlying socket"""
-        try:
+#        try:
+#            self.__ssl_conn.shutdown()
+#        except SSL.Error:
+#            # Make errors on shutdown non-fatal
+#            pass
+
+        if self._makefile_refs < 1:        
             self.__ssl_conn.shutdown()
-        except SSL.Error:
-            # Make errors on shutdown non-fatal
-            pass
-        
-        self.__ssl_conn.close()
+        else:
+            self._makefile_refs -= 1
 
     def set_shutdown(self, mode):
         """Set the shutdown state of the Connection.
@@ -212,7 +216,7 @@ class SSLSocket(object):
         """Return the SSL state of this connection."""
         return self.__ssl_conn.state_string()
 
-    def makefile(self, *args):
+    def _DEPRECATE_makefile(self, *args):
         """Specific to Python socket API and required by httplib: convert
         response into a file-like object.  This implementation reads using recv
         and copies the output into a StringIO buffer to simulate a file object
@@ -256,6 +260,17 @@ class SSLSocket(object):
 
         return stream
 
+    def makefile(self, mode='r', bufsize=-1):
+
+        """Make and return a file-like object that
+        works with the SSL connection.  Just use the code
+        from the socket module."""
+
+        self._makefile_refs += 1
+        # close=True so as to decrement the reference count when done with
+        # the file-like object.
+        return socket._fileobject(self.socket, mode, bufsize, close=True)
+    
     def getsockname(self):
         """
         @return: the socket's own address

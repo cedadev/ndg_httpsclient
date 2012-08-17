@@ -160,7 +160,7 @@ def open_url(url, config, data=None):
         handlers.append(urllib2.ProxyHandler(config.proxies))
         log.debug("Configuring proxies: %s" % config.proxies)
 
-    opener = build_opener(config.ssl_context, *handlers)
+    opener = build_opener(*handlers, ssl_context=config.ssl_context)
 
     # Open the URL and check the response.
     return_code = 0
