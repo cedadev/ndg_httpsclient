@@ -11,6 +11,23 @@ PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation over the
 default provided with Python and importantly enables full verification of the
 SSL peer. 
 
+Releases
+========
+0.3.0
+-----
+ * Added ndg.httpsclient.utils.fetch_stream_from_url function and added 
+   parameter for data to post in open_url and fetch_* methods.
+ * fix to ndg.httpsclient.utils module _should_use_proxy and open_url functions
+
+0.2.0
+-----
+ * added support for SSL verification with subjectAltNames using pyasn1
+ * fixed minor bug - SSL cert DN prefix matching
+  
+0.1.0
+-----
+Initial release
+
 Prerequisites
 =============
 This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13.  
@@ -47,7 +64,7 @@ Options::
     
 setup(
     name='ndg_httpsclient',
-    version="0.2.1",
+    version="0.3.0",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
