@@ -216,7 +216,7 @@ class SSLSocket(object):
         """Return the SSL state of this connection."""
         return self.__ssl_conn.state_string()
 
-    def _DEPRECATE_makefile(self, *args):
+    def makefile(self, *args):
         """Specific to Python socket API and required by httplib: convert
         response into a file-like object.  This implementation reads using recv
         and copies the output into a StringIO buffer to simulate a file object
@@ -230,6 +230,8 @@ class SSLSocket(object):
         @return: file object for data returned from socket
         @rtype: cStringIO.StringO
         """
+        self._makefile_refs += 1
+        
         # Optimisation
         _buf_size = self.buf_size
 
@@ -260,16 +262,16 @@ class SSLSocket(object):
 
         return stream
 
-    def makefile(self, mode='r', bufsize=-1):
-
-        """Make and return a file-like object that
-        works with the SSL connection.  Just use the code
-        from the socket module."""
-
-        self._makefile_refs += 1
-        # close=True so as to decrement the reference count when done with
-        # the file-like object.
-        return socket._fileobject(self.socket, mode, bufsize, close=True)
+#    def makefile(self, mode='r', bufsize=-1):
+#
+#        """Make and return a file-like object that
+#        works with the SSL connection.  Just use the code
+#        from the socket module."""
+#
+#        self._makefile_refs += 1
+#        # close=True so as to decrement the reference count when done with
+#        # the file-like object.
+#        return socket._fileobject(self.socket, mode, bufsize, close=True)
     
     def getsockname(self):
         """

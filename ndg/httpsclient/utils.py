@@ -186,7 +186,7 @@ def open_url(url, config, data=None):
     return (return_code, return_message, response)
 
 
-def _should_use_proxy(url, no_proxy):
+def _should_use_proxy(url, no_proxy=None):
     """Determines whether a proxy should be used to open a connection to the 
     specified URL, based on the value of the no_proxy environment variable.
     @param url: URL
