@@ -62,7 +62,7 @@ class URLFetchError(Exception):
     """Error fetching content from URL"""
     
 
-def fetch_from_url(url, config, data=None):
+def fetch_from_url(url, config, data=None, handlers=None):
     """Returns data retrieved from a URL.
     @param url: URL to attempt to open
     @type url: basestring
@@ -70,7 +70,8 @@ def fetch_from_url(url, config, data=None):
     @type config: Configuration
     @return data retrieved from URL or None
     """
-    return_code, return_message, response = open_url(url, config, data)
+    return_code, return_message, response = open_url(url, config, data=data,
+                                                     handlers=handlers)
     if return_code and return_code == httplib.OK:
         return_data = response.read()
         response.close()
@@ -78,7 +79,7 @@ def fetch_from_url(url, config, data=None):
     else:
         raise URLFetchError(return_message)
 
-def fetch_from_url_to_file(url, config, output_file, data=None):
+def fetch_from_url_to_file(url, config, output_file, data=None, handlers=None):
     """Writes data retrieved from a URL to a file.
     @param url: URL to attempt to open
     @type url: basestring
@@ -91,7 +92,8 @@ def fetch_from_url_to_file(url, config, output_file, data=None):
         returned message
         boolean indicating whether access was successful)
     """
-    return_code, return_message, response = open_url(url, config, data)
+    return_code, return_message, response = open_url(url, config, data=data,
+                                                     handlers=handlers)
     if return_code == httplib.OK:
         return_data = response.read()
         response.close()
@@ -100,7 +102,7 @@ def fetch_from_url_to_file(url, config, output_file, data=None):
         outfile.close()
     return return_code, return_message, return_code == httplib.OK
 
-def fetch_stream_from_url(url, config, data=None):
+def fetch_stream_from_url(url, config, data=None, handlers=None):
     """Returns data retrieved from a URL.
     @param url: URL to attempt to open
     @type url: basestring
@@ -109,14 +111,15 @@ def fetch_stream_from_url(url, config, data=None):
     @return: data retrieved from URL or None
     @rtype: file derived type
     """
-    return_code, return_message, response = open_url(url, config, data)
+    return_code, return_message, response = open_url(url, config, data=data,
+                                                     handlers=handlers)
     if return_code and return_code == httplib.OK:
         return response
     else:
         raise URLFetchError(return_message)
 
 
-def open_url(url, config, data=None):
+def open_url(url, config, data=None, handlers=None):
     """Attempts to open a connection to a specified URL.
     @param url: URL to attempt to open
     @param config: SSL context configuration
@@ -141,7 +144,10 @@ def open_url(url, config, data=None):
     # urllib2.HTTPCookieProcessor which replaces cookies).
     cookie_handler = AccumulatingHTTPCookieProcessor(cj)
 
-    handlers = [cookie_handler]
+    if not handlers:
+        handlers = []
+        
+    handlers.append(cookie_handler)
 
     if config.debug:
         http_handler = HTTPHandler(debuglevel=debuglevel)
