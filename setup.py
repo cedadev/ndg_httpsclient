@@ -6,16 +6,21 @@ except ImportError:
     from setuptools import setup, find_packages
 
 _long_description = '''
-This is a HTTPS client implementation for httplib and urllib2 based on 
+This is a HTTPS client implementation for httplib and urllib2 based on
 PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation over the
 default provided with Python and importantly enables full verification of the
-SSL peer. 
+SSL peer.
 
 Releases
 ========
+0.3.1
+-----
+ * extended utils functions to support keyword for passing additional urllib2
+   handlers.
+
 0.3.0
 -----
- * Added ndg.httpsclient.utils.fetch_stream_from_url function and added 
+ * Added ndg.httpsclient.utils.fetch_stream_from_url function and added
    parameter for data to post in open_url and fetch_* methods.
  * fix to ndg.httpsclient.utils module _should_use_proxy and open_url functions
 
@@ -23,48 +28,61 @@ Releases
 -----
  * added support for SSL verification with subjectAltNames using pyasn1
  * fixed minor bug - SSL cert DN prefix matching
-  
+
 0.1.0
 -----
 Initial release
 
 Prerequisites
 =============
-This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13.  
-Note that proxy support is only available from Python 2.6.2 onwards.  pyasn1 is 
+This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13.
+Note that proxy support is only available from Python 2.6.2 onwards.  pyasn1 is
 required for correct SSL verification with subjectAltNames.
 
 Installation
 ============
-Installation can be performed using easy_install or pip.  
+Installation can be performed using easy_install or pip.
 
 Running ndg_httpclient
 ======================
 A simple script for fetching data using HTTP or HTTPS GET from a specified URL.
- 
-Parameter::
-    url                   The URL of the resource to be fetched
 
-Options::
-    -h, --help            Show help message and exit.
-    -c FILE, --certificate=FILE
-                          Certificate file - defaults to $HOME/credentials.pem
-    -k FILE, --private-key=FILE
-                          Private key file - defaults to the certificate file
-    -t DIR, --ca-certificate-dir=DIR
-                          Trusted CA certificate file directory.
-    -d, --debug           Print debug information - this may be useful in 
-                          solving problems with HTTP or HTTPS access to a 
-                          server.
-    -p FILE, --post-data-file=FILE
-                          POST data file
-    -f FILE, --fetch=FILE Output file
-    -n, --no-verify-peer  Skip verification of peer certificate.
+Parameter:
+
+``url``
+  The URL of the resource to be fetched
+
+Options:
+
+``-h, --help``
+  Show help message and exit.
+
+``-c FILE, --certificate=FILE``
+  Certificate file - defaults to ``$HOME/credentials.pem``
+
+``-k FILE, --private-key=FILE``
+  Private key file - defaults to the certificate file
+
+``-t DIR, --ca-certificate-dir=DIR``
+  Trusted CA certificate file directory.
+
+``-d, --debug``
+  Print debug information - this may be useful in solving problems with HTTP or 
+  HTTPS access to a server.
+    
+``-p FILE, --post-data-file=FILE``
+  POST data file
+    
+``-f FILE, --fetch=FILE``
+  Output file
+    
+``-n, --no-verify-peer``
+  Skip verification of peer certificate.
 '''
     
 setup(
     name='ndg_httpsclient',
-    version="0.3.0",
+    version="0.3.1",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
