@@ -14,7 +14,8 @@ import logging
 from optparse import OptionParser
 import os
 import urllib2
-from urllib2 import HTTPHandler, HTTPCookieProcessor
+from urllib2 import (HTTPHandler, HTTPCookieProcessor, 
+                     HTTPBasicAuthHandler, HTTPPasswordMgrWithDefaultRealm)
 
 import urlparse
 
@@ -126,6 +127,8 @@ def open_url(url, config, data=None, handlers=None):
     @type config: Configuration
     @param data: HTTP POST data
     @type data: str
+    @param handlers: list of custom urllib2 handlers to add to the request
+    @type handlers: iterable
     @return: tuple (
         returned HTTP status code or 0 if an error occurred
         returned message or error description
@@ -154,6 +157,15 @@ def open_url(url, config, data=None, handlers=None):
         https_handler = HTTPSContextHandler(config.ssl_context, 
                                             debuglevel=debuglevel)
         handlers.extend([http_handler, https_handler])
+        
+    if config.http_basicauth:
+        # currently only supports http basic auth
+        auth_handler = HTTPBasicAuthHandler(HTTPPasswordMgrWithDefaultRealm())
+        auth_handler.add_password(realm=None, uri=url,
+                                  user=config.httpauth[0],
+                                  passwd=config.httpauth[1])
+        handlers.append(auth_handler)
+
 
     # Explicitly remove proxy handling if the host is one listed in the value of
     # the no_proxy environment variable because urllib2 does use proxy settings 
@@ -167,13 +179,18 @@ def open_url(url, config, data=None, handlers=None):
         log.debug("Configuring proxies: %s" % config.proxies)
 
     opener = build_opener(*handlers, ssl_context=config.ssl_context)
+    
+    headers = config.headers
+    if headers is None: 
+        headers = {}
+        request = urllib2.Request(url, data, headers)
 
     # Open the URL and check the response.
     return_code = 0
     return_message = ''
     response = None
     try:
-        response = opener.open(url, data)
+        response = opener.open(request)
         return_message = response.msg
         return_code = response.code
         if log.isEnabledFor(logging.DEBUG):
@@ -231,7 +248,7 @@ class Configuration(object):
     """Connection configuration.
     """
     def __init__(self, ssl_context, debug=False, proxies=None, no_proxy=None,
-                 cookie=None):
+                 cookie=None, http_basicauth=None, headers=None):
         """
         @param ssl_context: SSL context to use with this configuration
         @type ssl_context: OpenSSL.SSL.Context
@@ -243,12 +260,18 @@ class Configuration(object):
         @type no_proxy: basestring
         @param cookie: cookies to set for request
         @type cookie: cookielib.CookieJar
+        @param http_basicauth: http authentication, or None
+        @type http_basicauth: tuple of (username,password)
+        @param headers: http headers
+        @type headers: dict
         """
         self.ssl_context = ssl_context
         self.debug = debug
         self.proxies = proxies
         self.no_proxy = no_proxy
         self.cookie = cookie
+        self.http_basicauth = http_basicauth
+        self.headers = headers
 
 
 def main():
@@ -276,6 +299,12 @@ def main():
     parser.add_option("-n", "--no-verify-peer", action="store_true", 
                       dest="no_verify_peer", default=False,
                       help="Skip verification of peer certificate.")
+    parser.add_option("-a", "--basicauth", dest="auth", metavar="USER:PASSWD",
+                      default=None,
+                      help="HTTP authentication credentials")
+    parser.add_option("--header", action="append", dest="headers", 
+                      metavar="HEADER: VALUE",
+                      help="Add HTTP header to request")
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.error("Incorrect number of arguments")
@@ -309,6 +338,17 @@ def main():
     else:
         data = None
     
+    if options.basicauth:
+        http_basicauth = options.auth.split(':', 1)
+    else:
+        http_basicauth = None
+
+    headers = {}
+    if options.headers:
+        for h in options.headers:
+            key, val = h.split(':', 1)
+            headers[key.strip()] = val.lstrip()
+            
     # If a private key file is not specified, the key is assumed to be stored in 
     # the certificate file.
     ssl_context = ssl_context_util.make_ssl_context(key_file,
@@ -318,9 +358,13 @@ def main():
                                                     verify_peer, 
                                                     url)
 
-    config = Configuration(ssl_context, options.debug)
+    config = Configuration(ssl_context, 
+                           options.debug,
+                           http_basicauth=http_basicauth,
+                           headers=headers)
     if options.output_file:
-        return_code, return_message = fetch_from_url_to_file(url, 
+        return_code, return_message = fetch_from_url_to_file(
+                                                      url, 
                                                       config,
                                                       options.output_file,
                                                       data)[:2]
