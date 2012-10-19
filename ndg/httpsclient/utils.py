@@ -183,7 +183,8 @@ def open_url(url, config, data=None, handlers=None):
     headers = config.headers
     if headers is None: 
         headers = {}
-        request = urllib2.Request(url, data, headers)
+        
+    request = urllib2.Request(url, data, headers)
 
     # Open the URL and check the response.
     return_code = 0
