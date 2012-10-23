@@ -13,9 +13,16 @@ log = logging.getLogger(__name__)
 try:
     from ndg.httpsclient.subj_alt_name import SubjectAltName
     from pyasn1.codec.der import decoder as der_decoder
-    subj_alt_name_support = True
+    SUBJ_ALT_NAME_SUPPORT = True
 except ImportError, e:
-    subj_alt_name_support = False
+    SUBJ_ALT_NAME_SUPPORT = False
+    SUBJ_ALT_NAME_SUPPORT_MSG = (
+        'SubjectAltName support is disabled - check pyasn1 package '
+        'installation to enable'
+    )
+    import warnings
+    warnings.warn(SUBJ_ALT_NAME_SUPPORT_MSG)
+
 
 class ServerSSLCertVerification(object):
     """Check server identity.  If hostname doesn't match, allow match of
@@ -64,12 +71,12 @@ class ServerSSLCertVerification(object):
             self.hostname = hostname
         
         if subj_alt_name_match:
-            if not subj_alt_name_support:
+            if not SUBJ_ALT_NAME_SUPPORT:
                 log.warning('Overriding "subj_alt_name_match" keyword setting: '
                             'peer verification with subjectAltNames is disabled')
                 self.__subj_alt_name_match = False
-                
-            self.__subj_alt_name_match = True
+            else:    
+                self.__subj_alt_name_match = True
         else:
             log.debug('Disabling peer verification with subject '
                       'subjectAltNames!')
