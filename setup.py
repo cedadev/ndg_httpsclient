@@ -13,6 +13,14 @@ SSL peer.
 
 Releases
 ========
+0.3.2
+-----
+ * Fix to SubjectAltNames support check - should only be enabled if pyasn1 is 
+   installed.
+ * Fix to open_url: HTTP Request object was being created inside if headers is 
+   None block - now corrected to create regardless.
+ * Added http basic auth support to script. (Thanks to Willem van Engen)
+ 
 0.3.1
 -----
  * extended utils functions to support keyword for passing additional urllib2
@@ -82,7 +90,7 @@ Options:
     
 setup(
     name='ndg_httpsclient',
-    version="0.3.1",
+    version="0.3.2",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
