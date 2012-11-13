@@ -109,6 +109,10 @@ def fetch_stream_from_url(url, config, data=None, handlers=None):
     @type url: basestring
     @param config: SSL context configuration
     @type config: Configuration
+    @param data: HTTP POST data
+    @type data: str
+    @param handlers: list of custom urllib2 handlers to add to the request
+    @type handlers: iterable
     @return: data retrieved from URL or None
     @rtype: file derived type
     """
@@ -141,6 +145,7 @@ def open_url(url, config, data=None, handlers=None):
         cj = config.cookie
     else:
         cj = cookielib.CookieJar()
+        
     # Use a cookie processor that accumulates cookies when redirects occur so
     # that an application can redirect for authentication and retain both any
     # cookies for the application and the security system (c.f.,

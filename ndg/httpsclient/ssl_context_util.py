@@ -36,7 +36,8 @@ def make_ssl_context_from_config(ssl_config=False, url=None):
 
 
 def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
-                     verify_peer=False, url=None, method=SSL.SSLv23_METHOD):
+                     verify_peer=False, url=None, method=SSL.SSLv23_METHOD,
+                     key_file_passphrase=None):
     """
     Creates SSL context containing certificate and key file locations.
     """
@@ -45,11 +46,16 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
     # Key file defaults to certificate file if present.
     if cert_file:
         ssl_context.use_certificate_file(cert_file)
+        
+    if key_file_passphrase:
+        passwd_cb = lambda max_passphrase_len, set_prompt, userdata: \
+                           key_file_passphrase 
+        ssl_context.set_passwd_cb(passwd_cb)
+        
     if key_file:
         ssl_context.use_privatekey_file(key_file)
-    else:
-        if cert_file:
-            ssl_context.use_privatekey_file(cert_file)
+    elif cert_file:
+        ssl_context.use_privatekey_file(cert_file)
 
     if pem_file or ca_dir:
         ssl_context.load_verify_locations(pem_file, ca_dir)
@@ -70,6 +76,7 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
             ssl_context.set_verify(SSL.VERIFY_PEER, verify_callback)
     else:
         ssl_context.set_verify(SSL.VERIFY_NONE, verify_callback)
+        
     return ssl_context
 
 
