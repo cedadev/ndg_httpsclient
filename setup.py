@@ -13,6 +13,12 @@ SSL peer.
 
 Releases
 ========
+0.3.3
+-----
+ * Fix to add in AnotherName for subjectAltNames field - added for support for CACert issued
+   certs (thanks to Gu1).
+ * Fix to HTTP Basic Auth option for ndg.httpsclient.utils.main
+
 0.3.2
 -----
  * Fix to SubjectAltNames support check - should only be enabled if pyasn1 is 
@@ -90,7 +96,7 @@ Options:
     
 setup(
     name='ndg_httpsclient',
-    version="0.3.2",
+    version="0.3.3",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',

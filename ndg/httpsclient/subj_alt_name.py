@@ -99,12 +99,21 @@ class Extensions(univ.SequenceOf):
     sizeSpec = univ.SequenceOf.sizeSpec + constraint.ValueSizeConstraint(1, MAX)
 
 
+class AnotherName(univ.Sequence):
+    componentType = namedtype.NamedTypes(
+        namedtype.NamedType('type-id', univ.ObjectIdentifier()),
+        namedtype.NamedType('value', univ.Any().subtype(
+                            explicitTag=tag.Tag(tag.tagClassContext,
+                                                tag.tagFormatSimple, 0))
+        )
+
+
 class GeneralName(univ.Choice):
     '''ASN.1 configuration for X.509 certificate subjectAltNames fields'''
     componentType = namedtype.NamedTypes(
-#        namedtype.NamedType('otherName', AnotherName().subtype(
-#                            implicitTag=tag.Tag(tag.tagClassContext,
-#                                                tag.tagFormatSimple, 0))),
+        namedtype.NamedType('otherName', AnotherName().subtype(
+                            implicitTag=tag.Tag(tag.tagClassContext,
+                                                tag.tagFormatSimple, 0))),
         namedtype.NamedType('rfc822Name', char.IA5String().subtype(
                             implicitTag=tag.Tag(tag.tagClassContext,
                                                 tag.tagFormatSimple, 1))),

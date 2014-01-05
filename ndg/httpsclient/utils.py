@@ -101,7 +101,9 @@ def fetch_from_url_to_file(url, config, output_file, data=None, handlers=None):
         outfile = open(output_file, "w")
         outfile.write(return_data)
         outfile.close()
+        
     return return_code, return_message, return_code == httplib.OK
+
 
 def fetch_stream_from_url(url, config, data=None, handlers=None):
     """Returns data retrieved from a URL.
@@ -202,16 +204,19 @@ def open_url(url, config, data=None, handlers=None):
         if log.isEnabledFor(logging.DEBUG):
             for index, cookie in enumerate(cj):
                 log.debug("%s  :  %s", index, cookie)
+                
     except urllib2.HTTPError, exc:
         return_code = exc.code
         return_message = "Error: %s" % exc.msg
         if log.isEnabledFor(logging.DEBUG):
             log.debug("%s %s", exc.code, exc.msg)
+            
     except Exception, exc:
         return_message = "Error: %s" % exc.__str__()
         if log.isEnabledFor(logging.DEBUG):
             import traceback
             log.debug(traceback.format_exc())
+            
     return (return_code, return_message, response)
 
 
@@ -305,7 +310,8 @@ def main():
     parser.add_option("-n", "--no-verify-peer", action="store_true", 
                       dest="no_verify_peer", default=False,
                       help="Skip verification of peer certificate.")
-    parser.add_option("-a", "--basicauth", dest="auth", metavar="USER:PASSWD",
+    parser.add_option("-a", "--basicauth", dest="basicauth", 
+                      metavar="USER:PASSWD",
                       default=None,
                       help="HTTP authentication credentials")
     parser.add_option("--header", action="append", dest="headers", 
@@ -345,7 +351,7 @@ def main():
         data = None
     
     if options.basicauth:
-        http_basicauth = options.auth.split(':', 1)
+        http_basicauth = options.basicauth.split(':', 1)
     else:
         http_basicauth = None
 
