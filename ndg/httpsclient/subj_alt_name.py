@@ -104,7 +104,7 @@ class AnotherName(univ.Sequence):
         namedtype.NamedType('type-id', univ.ObjectIdentifier()),
         namedtype.NamedType('value', univ.Any().subtype(
                             explicitTag=tag.Tag(tag.tagClassContext,
-                                                tag.tagFormatSimple, 0))
+                                                tag.tagFormatSimple, 0)))
         )
 
 

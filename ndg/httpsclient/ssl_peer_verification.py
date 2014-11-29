@@ -155,6 +155,14 @@ class ServerSSLCertVerification(object):
         else:
             return preverifyOK
 
+    def get_verify_server_cert_func(self):
+         def verify_server_cert(connection, peerCert, errorStatus, errorDepth,
+                 preverifyOK):
+              return self.__call__(connection, peerCert, errorStatus,
+                                   errorDepth, preverifyOK)
+
+         return verify_server_cert
+
     @classmethod
     def _get_subj_alt_name(cls, peer_cert):
         '''Extract subjectAltName DNS name settings from certificate extensions

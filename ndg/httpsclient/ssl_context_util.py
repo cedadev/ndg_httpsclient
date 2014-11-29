@@ -36,7 +36,7 @@ def make_ssl_context_from_config(ssl_config=False, url=None):
 
 
 def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
-                     verify_peer=False, url=None, method=SSL.SSLv23_METHOD,
+                     verify_peer=False, url=None, method=SSL.TLSv1_METHOD,
                      key_file_passphrase=None):
     """
     Creates SSL context containing certificate and key file locations.
@@ -87,5 +87,7 @@ def set_peer_verification_for_url_hostname(ssl_context, url,
     if not if_verify_enabled or (ssl_context.get_verify_mode() & SSL.VERIFY_PEER):
         urlObj = urlparse.urlparse(url)
         hostname = urlObj.hostname
-        verify_callback = ServerSSLCertVerification(hostname=hostname)
-        ssl_context.set_verify(SSL.VERIFY_PEER, verify_callback)
+        server_ssl_cert_verif = ServerSSLCertVerification(hostname=hostname)
+        verify_callback_ = server_ssl_cert_verif.get_verify_server_cert_func()
+        ssl_context.set_verify(SSL.VERIFY_PEER, verify_callback_)
+
