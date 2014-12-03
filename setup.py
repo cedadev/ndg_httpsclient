@@ -18,6 +18,7 @@ Releases
  * Fix to add in AnotherName for subjectAltNames field - added for support for CACert issued
    certs (thanks to Gu1).
  * Fix to HTTP Basic Auth option for ndg.httpsclient.utils.main
+ * Fix to ServerSSLCertVerification so that it can pass a function-based callback instead of using __call__. In newer versions of OpenSSL (>= 0.14) the latter failed because of a request for `__name__` attribute.
 
 0.3.2
 -----
@@ -49,7 +50,7 @@ Initial release
 
 Prerequisites
 =============
-This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13.
+This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13 and 0.14.
 Note that proxy support is only available from Python 2.6.2 onwards.  pyasn1 is
 required for correct SSL verification with subjectAltNames.
 
@@ -101,7 +102,7 @@ setup(
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
     author_email='Philip.Kershaw@stfc.ac.uk',
-    url='http://ndg-security.ceda.ac.uk/wiki/ndg_httpsclient/',
+    url='https://github.com/cedadev/ndg_httpsclient/',
     long_description=_long_description,
     license='BSD - See LICENCE file for details',
     namespace_packages=['ndg'],
