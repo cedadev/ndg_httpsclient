@@ -15,10 +15,10 @@ Releases
 ========
 0.3.3
 -----
- * Fix to add in AnotherName for subjectAltNames field - added for support for CACert issued
+ * Fix to add in AnotherName for ``subjectAltNames`` field - added for support for CACert issued
    certs (thanks to Gu1).
- * Fix to HTTP Basic Auth option for ndg.httpsclient.utils.main
- * Fix to ServerSSLCertVerification so that it can pass a function-based callback instead of using __call__. In newer versions of OpenSSL (>= 0.14) the latter failed because of a request for `__name__` attribute.
+ * Fix to HTTP Basic Auth option for ``ndg.httpsclient.utils.main``
+ * Fix to ``ServerSSLCertVerification`` so that it can pass a function-based callback instead of using ``__call__``. In newer versions of OpenSSL (>= 0.14) the latter failed because of a request for ``__name__`` attribute.
 
 0.3.2
 -----
