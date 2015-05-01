@@ -14,6 +14,7 @@ import sys
 if sys.version_info[0] > 2:
     class_type_ = type
 else:
+    import types
     class_type_ = types.ClassType
     
 from urllib2 import (ProxyHandler, UnknownHandler, HTTPDefaultErrorHandler, 

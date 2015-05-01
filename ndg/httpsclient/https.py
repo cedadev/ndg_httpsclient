@@ -12,6 +12,7 @@ __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 import logging
 import socket
+import sys
 
 if sys.version_info[0] > 2:
     from http.client import HTTPS_PORT
@@ -87,7 +88,8 @@ class HTTPSConnection(HTTPConnection):
 
     def close(self):
         """Close socket and shut down SSL connection"""
-        self.sock.close()
+        if hasattr(self.sock, "close"):
+            self.sock.close()
         
         
 class HTTPSContextHandler(AbstractHTTPHandler):

@@ -9,6 +9,8 @@ __copyright__ = "(C) 2012 Science and Technology Facilities Council"
 __license__ = "BSD - see LICENSE file in top-level directory"
 __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
+import sys
+
 if sys.version_info[0] > 2:
     from urllib.error import URLError as URLError_
 else:
@@ -40,14 +42,14 @@ class Urllib2TestCase(unittest.TestCase):
         
     def test04_open_peer_cert_verification_fails(self):
         # Explicitly set empty CA directory to make verification fail
-        ctx = SSL.Context(SSL.SSLv3_METHOD)
+        ctx = SSL.Context(SSL.TLSv1_METHOD)
         verify_callback = lambda conn, x509, errnum, errdepth, preverify_ok: \
             preverify_ok 
             
         ctx.set_verify(SSL.VERIFY_PEER, verify_callback)
         ctx.load_verify_locations(None, './')
         opener = build_opener(ssl_context=ctx)
-        self.assertRaises(excClass, callableObj)(SSL.Error, opener.open, Constants.TEST_URI)
+        self.assertRaises(SSL.Error, opener.open, Constants.TEST_URI)
         
         
 if __name__ == "__main__":
