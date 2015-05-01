@@ -12,8 +12,14 @@ __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 import logging
 import socket
-from httplib import HTTPS_PORT
-from httplib import HTTPConnection
+
+if sys.version_info[0] > 2:
+    from http.client import HTTPS_PORT
+    from http.client import HTTPConnection
+else:
+    from httplib import HTTPS_PORT
+    from httplib import HTTPConnection
+
 from urllib2 import AbstractHTTPHandler
 
 

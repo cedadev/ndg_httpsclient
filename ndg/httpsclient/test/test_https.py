@@ -35,7 +35,7 @@ class TestHTTPSConnection(unittest.TestCase):
 
     def test02_open_fails(self):
         conn = HTTPSConnection(Constants.HOSTNAME, port=Constants.PORT2)
-        self.failUnlessRaises(socket.error, conn.connect)
+        self.assertRaises(socket.error, conn.connect)
 
     def test03_ssl_verification_of_peer_fails(self):
         ctx = SSL.Context(SSL.SSLv3_METHOD)
@@ -54,7 +54,7 @@ class TestHTTPSConnection(unittest.TestCase):
         conn = HTTPSConnection(Constants.HOSTNAME, port=Constants.PORT,
                                ssl_context=ctx)
         conn.connect()        
-        self.failUnlessRaises(SSL.Error, conn.request, 'GET', '/')
+        self.assertRaises(SSL.Error, conn.request, 'GET', '/')
 
     def test03_ssl_verification_of_peer_succeeds(self):
         ctx = SSL.Context(SSL.SSLv3_METHOD)

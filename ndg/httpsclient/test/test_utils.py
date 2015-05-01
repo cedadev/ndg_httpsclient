@@ -24,13 +24,13 @@ class TestUtilsModule(unittest.TestCase):
 
     def test01_configuration(self):
         config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)
-        self.assert_(config.ssl_context)
-        self.assertEquals(config.debug, True)
+        self.assertTrue(config.ssl_context)
+        self.assertEqual(config.debug, True)
 
     def test02_fetch_from_url(self):
         config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)
         res = fetch_from_url(Constants.TEST_URI, config)
-        self.assert_(res)
+        self.assertTrue(res)
         
     def test03_open_url(self):
         config = Configuration(SSL.Context(SSL.SSLv3_METHOD), True)

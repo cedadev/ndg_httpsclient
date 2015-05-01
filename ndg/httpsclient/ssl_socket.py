@@ -12,7 +12,12 @@ __revision__ = '$Id$'
 from datetime import datetime
 import logging
 import socket
-from cStringIO import StringIO
+import sys
+
+if sys.version_info[0] > 2:
+    from io import StringIO
+else:
+    from cStringIO import StringIO
 
 from OpenSSL import SSL
 
@@ -61,8 +66,8 @@ class SSLSocket(object):
     @buf_size.setter
     def buf_size(self, value):
         """Buffer size for makefile method recv() operations"""
-        if not isinstance(value, (int, long)):
-            raise TypeError('Expecting int or long type for "buf_size"; '
+        if not isinstance(value, int):
+            raise TypeError('Expecting int type for "buf_size"; '
                             'got %r instead' % type(value))
         self.__buf_size = value
 

@@ -8,6 +8,14 @@ __license__ = "BSD - see LICENSE file in top-level directory"
 __contact__ = "Philip.Kershaw@stfc.ac.uk"
 __revision__ = '$Id$'
 import logging
+import sys
+
+# Py 2 <=> 3 compatibility for class type checking
+if sys.version_info[0] > 2:
+    class_type_ = type
+else:
+    class_type_ = types.ClassType
+    
 from urllib2 import (ProxyHandler, UnknownHandler, HTTPDefaultErrorHandler, 
                      FTPHandler, FileHandler, HTTPErrorProcessor, HTTPHandler, 
                      OpenerDirector, HTTPRedirectHandler)
@@ -29,7 +37,7 @@ def build_opener(*handlers, **kw):
     """
     import types
     def isclass(obj):
-        return isinstance(obj, types.ClassType) or hasattr(obj, "__bases__")
+        return isinstance(obj, class_type_) or hasattr(obj, "__bases__")
 
     opener = OpenerDirector()
     default_classes = [ProxyHandler, UnknownHandler, HTTPHandler,

@@ -13,6 +13,10 @@ SSL peer.
 
 Releases
 ========
+0.4.0
+-----
+ * Made dual compatible with Python 2 / 3.
+ 
 0.3.3
 -----
  * Fix to add in AnotherName for ``subjectAltNames`` field - added for support for CACert issued
@@ -50,9 +54,10 @@ Initial release
 
 Prerequisites
 =============
-This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13 and 0.14.
-Note that proxy support is only available from Python 2.6.2 onwards.  pyasn1 is
-required for correct SSL verification with subjectAltNames.
+This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13 and 0.14.  
+Version 0.4.0 tested with pyOpenSSL 0.15.1 and Python 2.7 and 3.4.  Note that proxy support 
+is only available from Python 2.6.2 onwards.  pyasn1 is required for correct SSL 
+verification with subjectAltNames.
 
 Installation
 ============
