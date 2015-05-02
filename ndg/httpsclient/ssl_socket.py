@@ -12,13 +12,7 @@ __revision__ = '$Id$'
 from datetime import datetime
 import logging
 import socket
-import sys
-
-if sys.version_info[0] > 2:
-    # Make use of byte buffer for Python 3
-    from io import BytesIO as BufferIO_
-else:
-    from cStringIO import StringIO as BufferIO_
+from io import BytesIO as BufferIO_
 
 from OpenSSL import SSL
 
