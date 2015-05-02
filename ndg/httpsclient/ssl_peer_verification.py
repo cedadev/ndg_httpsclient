@@ -14,6 +14,7 @@ try:
     from ndg.httpsclient.subj_alt_name import SubjectAltName
     from pyasn1.codec.der import decoder as der_decoder
     SUBJ_ALT_NAME_SUPPORT = True
+    
 except ImportError as e:
     SUBJ_ALT_NAME_SUPPORT = False
     SUBJ_ALT_NAME_SUPPORT_MSG = (
@@ -156,12 +157,12 @@ class ServerSSLCertVerification(object):
             return preverifyOK
 
     def get_verify_server_cert_func(self):
-         def verify_server_cert(connection, peerCert, errorStatus, errorDepth,
-                 preverifyOK):
-              return self.__call__(connection, peerCert, errorStatus,
-                                   errorDepth, preverifyOK)
-
-         return verify_server_cert
+        def verify_server_cert(connection, peerCert, errorStatus, errorDepth,
+                preverifyOK):
+            return self.__call__(connection, peerCert, errorStatus,
+                                 errorDepth, preverifyOK)
+        
+        return verify_server_cert
 
     @classmethod
     def _get_subj_alt_name(cls, peer_cert):

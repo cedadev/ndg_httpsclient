@@ -15,9 +15,10 @@ import socket
 import sys
 
 if sys.version_info[0] > 2:
-    from io import StringIO
+    # Make use of byte buffer for Python 3
+    from io import BytesIO as BufferIO_
 else:
-    from cStringIO import StringIO
+    from cStringIO import StringIO as BufferIO_
 
 from OpenSSL import SSL
 
@@ -74,14 +75,12 @@ class SSLSocket(object):
     def close(self):
         """Shutdown the SSL connection and call the close method of the
         underlying socket"""
-#        try:
-#            self.__ssl_conn.shutdown()
-#        except SSL.Error:
-#            # Make errors on shutdown non-fatal
-#            pass
-
         if self._makefile_refs < 1:        
-            self.__ssl_conn.shutdown()
+            try:
+                self.__ssl_conn.shutdown()
+            except (SSL.Error, SSL.SysCallError):
+                # Make errors on shutdown non-fatal
+                pass
         else:
             self._makefile_refs -= 1
 
@@ -241,7 +240,7 @@ class SSLSocket(object):
         _buf_size = self.buf_size
 
         i=0
-        stream = StringIO()
+        stream = BufferIO_()
         startTime = datetime.utcnow()
         try:
             dat = self.__ssl_conn.recv(_buf_size)
@@ -266,17 +265,6 @@ class SSLSocket(object):
         stream.seek(0)
 
         return stream
-
-#    def makefile(self, mode='r', bufsize=-1):
-#
-#        """Make and return a file-like object that
-#        works with the SSL connection.  Just use the code
-#        from the socket module."""
-#
-#        self._makefile_refs += 1
-#        # close=True so as to decrement the reference count when done with
-#        # the file-like object.
-#        return socket._fileobject(self.socket, mode, bufsize, close=True)
     
     def getsockname(self):
         """

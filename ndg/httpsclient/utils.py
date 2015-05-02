@@ -11,14 +11,17 @@ __revision__ = '$Id$'
 import logging
 from optparse import OptionParser
 import os
-
-from urllib2 import (HTTPHandler, HTTPCookieProcessor, 
-                     HTTPBasicAuthHandler, HTTPPasswordMgrWithDefaultRealm)
+import sys
 
 if sys.version_info[0] > 2:
     import http.cookiejar as cookiejar_
     import http.client as http_client_
     from urllib.request import Request as Request_
+    from urllib.request import HTTPHandler as HTTPHandler_
+    from urllib.request import HTTPCookieProcessor as HTTPCookieProcessor_
+    from urllib.request import HTTPBasicAuthHandler as HTTPBasicAuthHandler_
+    from urllib.request import HTTPPasswordMgrWithDefaultRealm as \
+                                            HTTPPasswordMgrWithDefaultRealm_
     from urllib.request import ProxyHandler as ProxyHandler_
     from urllib.error import HTTPError as HTTPError_
     import urllib.parse as urlparse_
@@ -26,6 +29,11 @@ else:
     import cookielib as cookiejar_
     import httplib as http_client_
     from urllib2 import Request as Request_
+    from urllib2 import HTTPHandler as HTTPHandler_
+    from urllib2 import HTTPCookieProcessor as HTTPCookieProcessor_
+    from urllib2 import HTTPBasicAuthHandler as HTTPBasicAuthHandler_
+    from urllib2 import HTTPPasswordMgrWithDefaultRealm as \
+                                            HTTPPasswordMgrWithDefaultRealm_
     from urllib2 import ProxyHandler as ProxyHandler_
     from urllib2 import HTTPError as HTTPError_
     import urlparse as urlparse_
@@ -36,7 +44,7 @@ from ndg.httpsclient import ssl_context_util
 
 log = logging.getLogger(__name__)
 
-class AccumulatingHTTPCookieProcessor(HTTPCookieProcessor):
+class AccumulatingHTTPCookieProcessor(HTTPCookieProcessor_):
     """Cookie processor that adds new cookies (instead of replacing the existing
     ones as HTTPCookieProcessor does)
     """
@@ -171,14 +179,14 @@ def open_url(url, config, data=None, handlers=None):
     handlers.append(cookie_handler)
 
     if config.debug:
-        http_handler = HTTPHandler(debuglevel=debuglevel)
+        http_handler = HTTPHandler_(debuglevel=debuglevel)
         https_handler = HTTPSContextHandler(config.ssl_context, 
                                             debuglevel=debuglevel)
         handlers.extend([http_handler, https_handler])
         
     if config.http_basicauth:
         # currently only supports http basic auth
-        auth_handler = HTTPBasicAuthHandler(HTTPPasswordMgrWithDefaultRealm())
+        auth_handler = HTTPBasicAuthHandler_(HTTPPasswordMgrWithDefaultRealm_())
         auth_handler.add_password(realm=None, uri=url,
                                   user=config.httpauth[0],
                                   passwd=config.httpauth[1])
@@ -208,6 +216,10 @@ def open_url(url, config, data=None, handlers=None):
     return_code = 0
     return_message = ''
     response = None
+    
+    # FIXME
+    response = opener.open(request)
+
     try:
         response = opener.open(request)
         return_message = response.msg
