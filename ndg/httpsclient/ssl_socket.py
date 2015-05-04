@@ -12,7 +12,7 @@ __revision__ = '$Id$'
 from datetime import datetime
 import logging
 import socket
-from io import BytesIO as BufferIO_
+from io import BytesIO
 
 from OpenSSL import SSL
 
@@ -234,7 +234,7 @@ class SSLSocket(object):
         _buf_size = self.buf_size
 
         i=0
-        stream = BufferIO_()
+        stream = BytesIO()
         startTime = datetime.utcnow()
         try:
             dat = self.__ssl_conn.recv(_buf_size)

@@ -1,0 +1,8 @@
+Installation notes
+==================
+
+For install on Mac Yosemite, special header file include paths are needed for
+PyOpenSSL dependency source builds.  Install XCode and add explicit include path
+for ffi package and generic include:
+
+export CPATH=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/ffi:/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/include/

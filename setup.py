@@ -102,7 +102,7 @@ Options:
     
 setup(
     name='ndg_httpsclient',
-    version="0.3.3",
+    version="0.4.0",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
