@@ -5,6 +5,8 @@ except ImportError:
     use_setuptools()
     from setuptools import setup, find_packages
 
+NAMESPACE_PKGS = ['ndg']
+
 _long_description = '''
 This is a HTTPS client implementation for httplib and urllib2 based on
 PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation over the
@@ -102,7 +104,7 @@ Options:
     
 setup(
     name='ndg_httpsclient',
-    version="0.4.0",
+    version="0.4.1",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
@@ -110,9 +112,9 @@ setup(
     url='https://github.com/cedadev/ndg_httpsclient/',
     long_description=_long_description,
     license='BSD - See LICENCE file for details',
-    namespace_packages=['ndg'],
     packages=find_packages(),
-    package_dir={'ndg.httpsclient': 'ndg/httpsclient'},
+    namespace_packages=NAMESPACE_PKGS,
+#     package_dir={'ndg.httpsclient': 'ndg/httpsclient'},
     package_data={
         'ndg.httpsclient': [
             'test/README', 
@@ -121,9 +123,9 @@ setup(
             'test/pki/ca/*.0'
             ],
     },
-    install_requires = ['PyOpenSSL'],
-    extras_require = {'subjectAltName_support': 'pyasn1'},
-    classifiers = [
+    install_requires=['PyOpenSSL'],
+    extras_require={'subjectAltName_support': 'pyasn1'},
+    classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Console',
         'Environment :: Web Environment',
@@ -143,8 +145,8 @@ setup(
         'Topic :: System :: Systems Administration :: Authentication/Directory',
         'Topic :: Software Development :: Libraries :: Python Modules'
     ],
-    zip_safe = False,
-    entry_points = {
+    zip_safe=False,
+    entry_points={
         'console_scripts': ['ndg_httpclient = ndg.httpsclient.utils:main',
                             ],
         }
