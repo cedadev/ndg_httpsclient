@@ -138,6 +138,7 @@ setup(
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 3',
         'Topic :: Security',
         'Topic :: Internet',
         'Topic :: Scientific/Engineering',
