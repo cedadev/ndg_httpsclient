@@ -5,6 +5,10 @@ SSL peer.
 
 Releases
 ========
+0.4.1
+-----
+ * Added explicit ref to Python 3 in classifier text for Python 3 checking tools.
+
 0.4.0
 -----
  * Made dual compatible with Python 2 / 3.
