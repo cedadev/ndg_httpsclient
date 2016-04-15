@@ -135,7 +135,7 @@ setup(
     install_requires=['PyOpenSSL'],
     extras_require={'subjectAltName_support': 'pyasn1'},
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Environment :: Web Environment',
         'Intended Audience :: End Users/Desktop',
