@@ -8,10 +8,13 @@ except ImportError:
 NAMESPACE_PKGS = ['ndg']
 
 _long_description = '''
-This is a HTTPS client implementation for httplib and urllib2 based on
-PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation over the
-default provided with Python and importantly enables full verification of the
-SSL peer.
+A HTTPS client implementation for 
+ * ``httplib`` (Python 2), ``http.client`` (Python 3) and 
+ * ``urllib2`` (Python 2) and ``urllib`` (Python 3)
+
+... based on PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation 
+over the default provided with Python and importantly enables full verification 
+of the SSL peer using ``pyasn1``.
 
 Releases
 ========
@@ -41,13 +44,13 @@ Releases
  
 0.3.1
 -----
- * extended utils functions to support keyword for passing additional urllib2
+ * extended utils functions to support keyword for passing additional ``urllib2``
    handlers.
 
 0.3.0
 -----
- * Added ndg.httpsclient.utils.fetch_stream_from_url function and added
-   parameter for data to post in open_url and fetch_* methods.
+ * Added ``ndg.httpsclient.utils.fetch_stream_from_url`` function and added
+   parameter for data to post in ``open_url`` and ``fetch_*`` methods.
  * fix to ndg.httpsclient.utils module _should_use_proxy and open_url functions
 
 0.2.0
@@ -61,10 +64,10 @@ Initial release
 
 Prerequisites
 =============
-This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13 and 0.14.  
-Version 0.4.0 tested with pyOpenSSL 0.15.1 and Python 2.7 and 3.4.  Note that proxy support 
-is only available from Python 2.6.2 onwards.  pyasn1 is required for correct SSL 
-verification with subjectAltNames.
+This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13 
+and 0.14.  Version 0.4.0 tested with ``pyOpenSSL`` 0.15.1 and Python 2.7 and 
+3.4.  Note that proxy support is only available from Python 2.6.2 onwards.  
+``pyasn1`` is required for correct SSL verification with ``subjectAltNames``.
 
 Installation
 ============

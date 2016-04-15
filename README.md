@@ -1,7 +1,10 @@
-A HTTPS client implementation for httplib and urllib2 based on
-PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation over the
-default provided with Python and importantly enables full verification of the
-SSL peer.
+A HTTPS client implementation for 
+ * ``httplib`` (Python 2), ``http.client`` (Python 3) and 
+ * ``urllib2`` (Python 2) and ``urllib`` (Python 3)
+
+... based on PyOpenSSL.  PyOpenSSL provides a more fully featured SSL implementation 
+over the default provided with Python and importantly enables full verification 
+of the SSL peer using ``pyasn1``.
 
 Releases
 ========
