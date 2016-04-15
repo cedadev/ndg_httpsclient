@@ -18,6 +18,7 @@ Releases
 0.4.1
 -----
  * Added explicit ref to Python 3 in classifier text for Python 3 checking tools.
+ * Moved LICENSE file into package
 
 0.4.0
 -----
@@ -121,6 +122,7 @@ setup(
 #     package_dir={'ndg.httpsclient': 'ndg/httpsclient'},
     package_data={
         'ndg.httpsclient': [
+            'LICENSE',
             'test/README', 
             'test/scripts/*.sh',
             'test/pki/localhost.*',
