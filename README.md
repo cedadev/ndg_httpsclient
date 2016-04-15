@@ -8,6 +8,7 @@ Releases
 0.4.1
 -----
  * Added explicit ref to Python 3 in classifier text for Python 3 checking tools.
+ * Moved LICENSE file into package
 
 0.4.0
 -----
