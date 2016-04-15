@@ -116,7 +116,7 @@ setup(
     author_email='Philip.Kershaw@stfc.ac.uk',
     url='https://github.com/cedadev/ndg_httpsclient/',
     long_description=_long_description,
-    license='BSD - See LICENCE file for details',
+    license='BSD - See ndg/httpsclient/LICENCE file for details',
     packages=find_packages(),
     namespace_packages=NAMESPACE_PKGS,
 #     package_dir={'ndg.httpsclient': 'ndg/httpsclient'},
