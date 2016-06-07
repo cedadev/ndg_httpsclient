@@ -6,6 +6,32 @@ python:
   - 3.4
   - 3.5
   - nightly
+
+before_install:
+  - PIP_VERSION=$(pip --version)
+  - |
+    if [[ ${PIP_VERSION:0:9} == 'pip 8.1.2' ]]; then
+      pip install --upgrade pip==8.1.1
+    fi
+
+  # Replicate an up to date precise system with python-openssl 0.12
+  # and python-pyasn1 0.0.11a on Python 2.7
+  - pip install PyOpenSSL==0.12
+  - |
+    if [[ ${TRAVIS_PYTHON_VERSION:0:1} == '2.7' ]]; then
+      pip install pyasn1==0.0.11a0
+      python -c "import pyasn1; assert pyasn1.__version__ == '0.0.11a0'"
+    fi
+
 script:
-  - python setup.py install
   - pip install -e '.[subjectAltName_support]'
+
+  # Confirm that pyasn1 is upgraded; see https://github.com/cedadev/ndg_httpsclient/issues/5
+  - |
+    if [[ ${TRAVIS_PYTHON_VERSION:0:2} == '2.7' ]]; then
+      python -c "import pyasn1; assert pyasn1.__version__ != '0.0.11a0'"
+    fi
+
+  # Also do a fresh install
+  - (cd /tmp && pip uninstall --yes ndg_httpsclient pyasn1 PyOpenSSL)
+  - python setup.py install
