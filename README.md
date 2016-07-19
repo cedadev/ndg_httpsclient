@@ -8,6 +8,12 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.4.2
+-----
+ * Fix to bug in ``ndg.httpsclient.utils.open_url`` - duplicate open call.  
+   Nb. This bug and the fix DO NOT affect the ``httplib``and ``urllib2`` 
+   interfaces that this package provides.
+ 
 0.4.1
 -----
  * Added explicit ref to Python 3 in classifier text for Python 3 checking tools.
