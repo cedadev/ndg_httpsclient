@@ -8,6 +8,11 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.4.3
+-----
+ * Minor fix for installation: set minimum release for ``pyasn1`` to avoid confl
+icts with Ubuntu install - see https://github.com/cedadev/ndg_httpsclient/issues/5 and https://github.com/cedadev/ndg_httpsclient/pull/10.
+
 0.4.2
 -----
  * Fix to bug in ``ndg.httpsclient.utils.open_url`` - duplicate open call.  

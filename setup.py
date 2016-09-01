@@ -18,6 +18,10 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.4.3
+-----
+ * Minor fix for installation: set minimum release for ``pyasn1`` to avoid conflicts with Ubuntu install - see https://github.com/cedadev/ndg_httpsclient/issues/5 and https://github.com/cedadev/ndg_httpsclient/pull/10.
+
 0.4.2
 -----
  * Fix to bug in ``ndg.httpsclient.utils.open_url`` - duplicate open call.  
@@ -118,7 +122,7 @@ Options:
     
 setup(
     name='ndg_httpsclient',
-    version="0.4.2",
+    version="0.4.3",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',
@@ -128,7 +132,6 @@ setup(
     license='BSD - See ndg/httpsclient/LICENCE file for details',
     packages=find_packages(),
     namespace_packages=NAMESPACE_PKGS,
-#     package_dir={'ndg.httpsclient': 'ndg/httpsclient'},
     package_data={
         'ndg.httpsclient': [
             'LICENSE',
@@ -139,7 +142,7 @@ setup(
             ],
     },
     install_requires=['PyOpenSSL'],
-    extras_require={'subjectAltName_support': 'pyasn1'},
+    extras_require={'subjectAltName_support': 'pyasn1>=0.1.1'},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
