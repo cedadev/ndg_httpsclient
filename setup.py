@@ -20,7 +20,11 @@ Releases
 ========
 0.4.3
 -----
- * Minor fix for installation: set minimum release for ``pyasn1`` to avoid conflicts with Ubuntu install - see https://github.com/cedadev/ndg_httpsclient/issues/5 and https://github.com/cedadev/ndg_httpsclient/pull/10.
+ * Minor fix for installation: set minimum release for ``pyasn1`` to avoid conflicts with Ubuntu
+   install - see https://github.com/cedadev/ndg_httpsclient/issues/5 and
+   https://github.com/cedadev/ndg_httpsclient/pull/10.  ``pyasn1`` also becomes mandatory rather
+   than optional package for install.  - It required by ``cryptography`` anyway which is a 
+   dependency for ``pyOpenSSL`` from version 0.14.
 
 0.4.2
 -----
@@ -141,8 +145,7 @@ setup(
             'test/pki/ca/*.0'
             ],
     },
-    install_requires=['PyOpenSSL'],
-    extras_require={'subjectAltName_support': 'pyasn1>=0.1.1'},
+    install_requires=['PyOpenSSL', 'pyasn1>=0.1.1'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
