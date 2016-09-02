@@ -18,7 +18,7 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
-0.4.3
+0.4.3 (Candidate)
 -----
  * Minor fix for installation: set minimum release for ``pyasn1`` to avoid conflicts with Ubuntu
    install - see https://github.com/cedadev/ndg_httpsclient/issues/5 and
