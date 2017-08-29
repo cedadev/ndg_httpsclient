@@ -127,7 +127,7 @@ setup(
     long_description=_long_description,
     license='BSD - See ndg/httpsclient/LICENCE file for details',
     packages=find_packages(),
-    namespace_packages=NAMESPACE_PKGS,
+#     namespace_packages=NAMESPACE_PKGS,
 #     package_dir={'ndg.httpsclient': 'ndg/httpsclient'},
     package_data={
         'ndg.httpsclient': [
