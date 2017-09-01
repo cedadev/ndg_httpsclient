@@ -8,7 +8,7 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
-0.4.3 (Candidate)
+0.4.3
 -----
  * Fix to ``ndg`` namespace package warning issue (https://github.com/cedadev/ndg_httpsclient/issues/3).  
    ``__init__.py`` file now included in ``ndg`` directory so that there are no longer warnings with imports
