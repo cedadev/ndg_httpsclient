@@ -10,6 +10,9 @@ Releases
 ========
 0.4.3 (Candidate)
 -----
+ * Fix to ``ndg`` namespace package warning issue (https://github.com/cedadev/ndg_httpsclient/issues/3).  
+   ``__init__.py`` file now included in ``ndg`` directory so that there are no longer warnings with imports
+   when using Python 2.x.  Thanks to Max Mauntner for fix.
  * Minor fix for installation: set minimum release for ``pyasn1`` to avoid conflicts with Ubuntu
    install - see https://github.com/cedadev/ndg_httpsclient/issues/5 and
    https://github.com/cedadev/ndg_httpsclient/pull/10.  ``pyasn1`` also becomes mandatory rather
