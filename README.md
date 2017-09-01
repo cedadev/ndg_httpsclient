@@ -8,6 +8,14 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.4.3 (Candidate)
+-----
+ * Minor fix for installation: set minimum release for ``pyasn1`` to avoid conflicts with Ubuntu
+   install - see https://github.com/cedadev/ndg_httpsclient/issues/5 and
+   https://github.com/cedadev/ndg_httpsclient/pull/10.  ``pyasn1`` also becomes mandatory rather
+   than optional package for install.  - It required by ``cryptography`` anyway which is a 
+   dependency for ``pyOpenSSL`` from version 0.14.
+
 0.4.2
 -----
  * Fix to bug in ``ndg.httpsclient.utils.open_url`` - duplicate open call.  
