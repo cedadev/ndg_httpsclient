@@ -8,6 +8,10 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.4.4
+-----
+ * Updated test certificates
+
 0.4.3
 -----
  * Fix to ``ndg`` namespace package warning issue (https://github.com/cedadev/ndg_httpsclient/issues/3).  
