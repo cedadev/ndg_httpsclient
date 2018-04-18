@@ -20,7 +20,9 @@ class Constants(object):
     HOSTNAME = 'localhost'
     TEST_URI = 'https://%s:%d' % (HOSTNAME, PORT)
     TEST_URI2 = 'https://%s:%d' % (HOSTNAME, PORT2)
-
+#     TEST_URI = 'https://pypi.org'
+#     TEST_URI2 = 'https://www.google.co.uk'
+    
     UNITTEST_DIR = os.path.dirname(os.path.abspath(__file__))
     CACERT_DIR = os.path.join(UNITTEST_DIR, 'pki', 'ca')
     SSL_CERT_FILENAME = 'localhost.crt'

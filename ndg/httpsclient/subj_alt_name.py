@@ -25,7 +25,7 @@ except ImportError as e:
     raise Pyasn1ImportError(import_error_msg)
     
     
-MAX = 64
+MAX = 1024
 
 
 class DirectoryString(univ.Choice):
