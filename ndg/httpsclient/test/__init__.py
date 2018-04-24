@@ -18,8 +18,8 @@ class Constants(object):
     PORT = 4443
 #     PORT = 443
     PORT2 = 4444
-     HOSTNAME = 'localhost'
-#     HOSTNAME = 'files.pythonhosted.org'
+    HOSTNAME = 'localhost'
+#    HOSTNAME = 'files.pythonhosted.org'
     TEST_URI = 'https://%s:%d' % (HOSTNAME, PORT)
     TEST_URI2 = 'https://%s:%d' % (HOSTNAME, PORT2)
     

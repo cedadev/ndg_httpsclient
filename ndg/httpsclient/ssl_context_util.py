@@ -41,7 +41,7 @@ def make_ssl_context_from_config(ssl_config=False, url=None):
 
 
 def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
-                     verify_peer=False, url=None, method=SSL.TLSv1_METHOD,
+                     verify_peer=False, url=None, method=SSL.TLSv1_2_METHOD,
                      key_file_passphrase=None):
     """
     Creates SSL context containing certificate and key file locations.
@@ -64,6 +64,8 @@ def make_ssl_context(key_file=None, cert_file=None, pem_file=None, ca_dir=None,
 
     if pem_file or ca_dir:
         ssl_context.load_verify_locations(pem_file, ca_dir)
+    else:
+        ssl_context.set_default_verify_paths() # Use OS CA bundle
 
     def _callback(conn, x509, errnum, errdepth, preverify_ok):
         """Default certification verification callback.

@@ -12,9 +12,9 @@ __revision__ = '$Id$'
 import sys
 
 if sys.version_info[0] > 2:
-    from urllib.error import URLError as URLError_
+    from urllib.error import URLError as URLError
 else:
-    from urllib2 import URLError as URLError_
+    from urllib2 import URLError as URLError
     
 import unittest
 
@@ -37,10 +37,11 @@ class Urllib2TestCase(unittest.TestCase):
         self.assertTrue(res)
         print("res = %s" % res.read())
 
+    # Skip this test for remote service as it can take a long time to timeout
     @unittest.skipIf(Constants.HOSTNAME != 'localhost', 'Skip non-local host')
     def test03_open_fails_unknown_loc(self):
         opener = build_opener()
-        self.assertRaises(URLError_, opener.open, Constants.TEST_URI2)
+        self.assertRaises(URLError, opener.open, Constants.TEST_URI2)
         
     def test04_open_peer_cert_verification_fails(self):
         # Explicitly set empty CA directory to make verification fail
@@ -67,8 +68,17 @@ class Urllib2TestCase(unittest.TestCase):
         server_ssl_verify = ServerSSLCertVerification(hostname=_hostname)
         verify_callback_ = server_ssl_verify.get_verify_server_cert_func()
         ctx.set_verify(SSL.VERIFY_PEER, verify_callback_)
-        ctx.set_default_verify_paths()
-                    
+        
+        # Set default verify paths if testing with peer that has corresponding
+        # CA cert in bundle provided with the OS.  In this case, load verify
+        # locations is not needed.
+        #ctx.set_default_verify_paths()
+        
+        ctx.set_verify_depth(9)
+        
+        # Set correct location for CA certs to verify with
+        ctx.load_verify_locations(None, Constants.CACERT_DIR)
+                            
         opener = build_opener(ssl_context=ctx)
         res = opener.open(Constants.TEST_URI)
         self.assertTrue(res)
