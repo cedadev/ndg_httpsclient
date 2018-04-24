@@ -20,7 +20,6 @@ except ImportError as e:
                         'is: %s' % e)
     import warnings
     warnings.warn(import_error_msg)
-    barp
     class Pyasn1ImportError(ImportError):
         "Raise for pyasn1 import error"
     raise Pyasn1ImportError(import_error_msg)
