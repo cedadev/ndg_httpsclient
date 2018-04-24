@@ -8,6 +8,13 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.5.0
+-----
+ * Fix to Subject Alternative Name handling to allow for certificates with
+   more than 64 names (max now 1024).  Thanks to Matt Pegler
+ * Fix to subjectAltName string to use byte type for correct matching 
+ * Updated SSL Context objects to default to TLS 1.2
+
 0.4.4
 -----
  * Updated test certificates
