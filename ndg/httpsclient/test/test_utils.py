@@ -23,17 +23,17 @@ class TestUtilsModule(unittest.TestCase):
     '''Test ndg.httpsclient.utils module'''
 
     def test01_configuration(self):
-        config = Configuration(SSL.Context(SSL.TLSv1_METHOD), True)
+        config = Configuration(SSL.Context(SSL.TLSv1_2_METHOD), True)
         self.assertTrue(config.ssl_context)
         self.assertEqual(config.debug, True)
 
     def test02_fetch_from_url(self):
-        config = Configuration(SSL.Context(SSL.TLSv1_METHOD), True)
+        config = Configuration(SSL.Context(SSL.TLSv1_2_METHOD), True)
         res = fetch_from_url(Constants.TEST_URI, config)
         self.assertTrue(res)
         
     def test03_open_url(self):
-        config = Configuration(SSL.Context(SSL.TLSv1_METHOD), True)
+        config = Configuration(SSL.Context(SSL.TLSv1_2_METHOD), True)
         res = open_url(Constants.TEST_URI, config)
         self.assertEqual(res[0], 200, 
                          'open_url for %r failed' % Constants.TEST_URI)

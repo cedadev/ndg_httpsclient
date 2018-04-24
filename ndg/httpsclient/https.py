@@ -48,7 +48,7 @@ class HTTPSConnection(HTTPConnection):
     @type default_ssl_method: int
     """
     default_port = HTTPS_PORT
-    default_ssl_method = SSL.SSLv23_METHOD
+    default_ssl_method = SSL.TLSv1_2_METHOD
     
     def __init__(self, host, port=None, strict=None,
                  timeout=socket._GLOBAL_DEFAULT_TIMEOUT, ssl_context=None):
@@ -100,6 +100,8 @@ class HTTPSContextHandler(AbstractHTTPHandler):
     '''
     https_request = AbstractHTTPHandler.do_request_
 
+    SSL_METHOD = SSL.TLSv1_2_METHOD
+    
     def __init__(self, ssl_context, debuglevel=0):
         """
         @param ssl_context:SSL context
@@ -116,7 +118,7 @@ class HTTPSContextHandler(AbstractHTTPHandler):
                                 ssl_context)
             self.ssl_context = ssl_context
         else:
-            self.ssl_context = SSL.Context(SSL.TLSv1_METHOD)
+            self.ssl_context = SSL.Context(self.__class__.SSL_METHOD)
 
     def https_open(self, req):
         """Opens HTTPS request

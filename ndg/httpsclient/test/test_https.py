@@ -38,7 +38,7 @@ class TestHTTPSConnection(unittest.TestCase):
         self.assertRaises(socket.error, conn.connect)
 
     def test03_ssl_verification_of_peer_fails(self):
-        ctx = SSL.Context(SSL.TLSv1_METHOD)
+        ctx = SSL.Context(SSL.TLSv1_2_METHOD)
         
         def verify_callback(conn, x509, errnum, errdepth, preverify_ok): 
             log.debug('SSL peer certificate verification failed for %r',
@@ -57,7 +57,7 @@ class TestHTTPSConnection(unittest.TestCase):
         self.assertRaises(SSL.Error, conn.request, 'GET', '/')
 
     def test03_ssl_verification_of_peer_succeeds(self):
-        ctx = SSL.Context(SSL.TLSv1_METHOD)
+        ctx = SSL.Context(SSL.TLSv1_2_METHOD)
         
         verify_callback = lambda conn, x509, errnum, errdepth, preverify_ok: \
             preverify_ok 
@@ -76,7 +76,7 @@ class TestHTTPSConnection(unittest.TestCase):
         print('Response = %s' % resp.read())
 
     def test04_ssl_verification_with_subj_alt_name(self):
-        ctx = SSL.Context(SSL.TLSv1_METHOD)
+        ctx = SSL.Context(SSL.TLSv1_2_METHOD)
         
         verification = ServerSSLCertVerification(hostname='localhost')
         verify_callback = verification.get_verify_server_cert_func()
@@ -95,7 +95,7 @@ class TestHTTPSConnection(unittest.TestCase):
         print('Response = %s' % resp.read())
 
     def test04_ssl_verification_with_subj_common_name(self):
-        ctx = SSL.Context(SSL.TLSv1_METHOD)
+        ctx = SSL.Context(SSL.TLSv1_2_METHOD)
         
         # Explicitly set verification of peer hostname using peer certificate
         # subject common name

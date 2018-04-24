@@ -40,7 +40,7 @@ class ServerSSLCertVerification(object):
         'domainComponent':          'DC',
         'userid':                   'UID'
     }
-    SUBJ_ALT_NAME_EXT_NAME = 'subjectAltName'
+    SUBJ_ALT_NAME_EXT_NAME = b'subjectAltName'
     PARSER_RE_STR = '/(%s)=' % '|'.join(list(DN_LUT.keys()) + \
                                         list(DN_LUT.values()))
     PARSER_RE = re.compile(PARSER_RE_STR)

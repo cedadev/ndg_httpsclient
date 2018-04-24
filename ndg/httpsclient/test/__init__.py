@@ -16,11 +16,13 @@ class Constants(object):
     '''Convenience base class from which other unit tests can extend.  Its
     sets the generic data directory path'''
     PORT = 4443
+#     PORT = 443
     PORT2 = 4444
     HOSTNAME = 'localhost'
+#    HOSTNAME = 'files.pythonhosted.org'
     TEST_URI = 'https://%s:%d' % (HOSTNAME, PORT)
     TEST_URI2 = 'https://%s:%d' % (HOSTNAME, PORT2)
-
+    
     UNITTEST_DIR = os.path.dirname(os.path.abspath(__file__))
     CACERT_DIR = os.path.join(UNITTEST_DIR, 'pki', 'ca')
     SSL_CERT_FILENAME = 'localhost.crt'

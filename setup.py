@@ -18,6 +18,15 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.5.0
+-----
+ * Fix to Subject Alternative Name verification to handle certificates with up
+   to 1024 names (previously it was 64).  Tested with 
+   https://files.pythonhosted.org.  Thanks to Matt Pegler for flagging up
+ * Fix defaults in SSL context objects and in tests to use TLS 1.2
+ * Use byte type for ``subjectAltName`` field matching
+ * Added additional Subject Alternative Name test - in ``test_urlib2``
+ 
 0.4.4
 -----
  * Update test certificate files.
