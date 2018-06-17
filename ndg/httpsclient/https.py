@@ -78,10 +78,9 @@ class HTTPSConnection(HTTPConnection):
 
         sock = socket.create_connection((self.host, self.port), self.timeout)
         
-        # Tunnel if using a proxy - ONLY available for Python 2.6.2 and above      
-        if getattr(self, '_tunnel_host', None):
-            self.sock = sock
-            self._tunnel()
+        # Tunnel if using a proxy
+        self.sock = sock
+        self._tunnel()
             
         self.sock = SSLSocket(ssl_context, sock)
         
