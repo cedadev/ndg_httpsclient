@@ -9,3 +9,6 @@ python:
   - nightly
 script:
   - python setup.py install
+matrix:
+  allow_failures:
+  - python: nightly
