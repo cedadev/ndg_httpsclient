@@ -12,7 +12,7 @@ with open('README.md') as f:
 
 setup(
     name='ndg_httpsclient',
-    version="0.5.0",
+    version="0.5.1",
     description='Provides enhanced HTTPS support for httplib and urllib2 using '
                 'PyOpenSSL',
     author='Richard Wilkinson and Philip Kershaw',

@@ -15,7 +15,8 @@ Releases
  * Add Trove version classifiers to make it explicit what is supported
  * Add python_requires to help pip
  * Drop support for EOL Python 2.6 and 3.3  
-Thanks to @hugovk
+  
+Thanks to @hugovk for contributions
 
 0.5.0
 -----
@@ -98,7 +99,7 @@ and 0.14.  Version 0.4.0 tested with ``pyOpenSSL`` 0.15.1 and Python 2.7 and
 
 Installation
 ============
-Installation can be performed using easy_install or pip.
+Installation can be performed using ``easy_install`` or ``pip``.
 
 Running ndg_httpclient
 ======================
