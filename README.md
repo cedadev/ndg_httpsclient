@@ -82,9 +82,9 @@ Initial release
 
 Prerequisites
 =============
-This has been developed and tested for Python 2.6 and 2.7 with pyOpenSSL 0.13 
+This has been developed and tested for Python 2.7 with pyOpenSSL 0.13 
 and 0.14.  Version 0.4.0 tested with ``pyOpenSSL`` 0.15.1 and Python 2.7 and 
-3.4.  Note that proxy support is only available from Python 2.6.2 onwards.  
+3.4. 
 ``pyasn1`` is required for correct SSL verification with ``subjectAltNames``.
 
 Installation
