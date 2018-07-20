@@ -8,6 +8,15 @@ of the SSL peer using ``pyasn1``.
 
 Releases
 ========
+0.5.1
+-----
+ * Clean up handling for description file - pull in content from this file into setup()
+ * Allows the nightly build to fail
+ * Add Trove version classifiers to make it explicit what is supported
+ * Add python_requires to help pip
+ * Drop support for EOL Python 2.6 and 3.3
+Thanks to @hugovk
+
 0.5.0
 -----
  * Fix to Subject Alternative Name handling to allow for certificates with
