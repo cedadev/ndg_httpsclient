@@ -69,7 +69,7 @@ class AttributeTypeAndValue(univ.Sequence):
 
 
 class RelativeDistinguishedName(univ.SetOf):
-    '''ASN.1 Realtive distinguished name'''
+    '''ASN.1 Relative distinguished name'''
     componentType = AttributeTypeAndValue()
 
 class RDNSequence(univ.SequenceOf):
